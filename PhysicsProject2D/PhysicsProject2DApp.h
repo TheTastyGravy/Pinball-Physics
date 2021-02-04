@@ -2,10 +2,11 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "PhysicsScene.h"
 
-class PhysicsProject2DApp : public aie::Application {
+class PhysicsProject2DApp : public aie::Application
+{
 public:
-
 	PhysicsProject2DApp();
 	virtual ~PhysicsProject2DApp();
 
@@ -16,7 +17,8 @@ public:
 	virtual void draw();
 
 protected:
-
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
+
+	PhysicsScene* physicsScene;
 };
