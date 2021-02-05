@@ -8,11 +8,13 @@ public:
 	~Rigidbody();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-
 	virtual void debug() {}
 
 	void applyForce(glm::vec2 force);
 	void applyForceToOther(Rigidbody* otherActor, glm::vec2 force);
+
+	void resolveCollision(Rigidbody* otherActor);
+
 
 	virtual bool checkCollision(PhysicsObject* other) = 0;
 

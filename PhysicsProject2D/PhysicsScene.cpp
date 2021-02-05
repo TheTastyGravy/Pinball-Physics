@@ -137,7 +137,10 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 
 		if (sphereToPlane < sphere->getRadius() && direction < 0)
 		{
-			sphere->applyForce(-sphere->getVelocity() * sphere->getMass());
+			glm::vec2 thing = sphere->getVelocity() * sphere->getMass();
+			thing *= abs(plane->getNormal());
+
+			sphere->applyForce(-thing * 2.0f);
 			return true;
 		}
 	}
@@ -147,5 +150,20 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 
 bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere1, PhysicsObject* objSphere2)
 {
+	Sphere* sphere1 = dynamic_cast<Sphere*>(objSphere1);
+	Sphere* sphere2 = dynamic_cast<Sphere*>(objSphere2);
+
+	if (sphere1 != nullptr && sphere2 != nullptr)
+	{
+		float dist = glm::distance(sphere1->getPosition(), sphere2->getPosition());
+
+		float penetration = sphere1->getRadius() + sphere2->getRadius() - dist;
+		if (penetration > 0)
+		{
+			sphere1->resolveCollision(sphere2);
+			return true;
+		}
+	}
+
 	return false;
 }

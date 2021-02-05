@@ -35,14 +35,30 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setGravity(glm::vec2(0, 0));
 
 
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(0, -20), 3.0f, 1, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(20, -20), 3.0f, 1, glm::vec4(1, 0, 0, 1));
 	physicsScene->addActor(ball1);
 
-	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(0, -20), 3.0f, 1, glm::vec4(1, 1, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-20, -20), 3.0f, 1, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(ball2);
 
-	Plane* plane = new Plane(glm::vec2(0.0f, 0.5f), 0);
-	physicsScene->addActor(plane);
+	Plane* plane1 = new Plane(glm::vec2(0.0f, 1.0f), -50);
+	physicsScene->addActor(plane1);
+	Plane* plane2 = new Plane(glm::vec2(0.0f, -1.0f), -50);
+	physicsScene->addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(1.0f, 0.0f), -70);
+	physicsScene->addActor(plane3);
+	Plane* plane4 = new Plane(glm::vec2(-1.0f, 0.0f), -70);
+	physicsScene->addActor(plane4);
+
+	Plane* plane5 = new Plane(glm::vec2(1.0f, 1.0f), -60);
+	physicsScene->addActor(plane5);
+	Plane* plane6 = new Plane(glm::vec2(-1.0f, -1.0f), -60);
+	physicsScene->addActor(plane6);
+	Plane* plane7 = new Plane(glm::vec2(1.0f, -1.0f), -60);
+	physicsScene->addActor(plane7);
+	Plane* plane8 = new Plane(glm::vec2(-1.0f, 1.0f), -60);
+	physicsScene->addActor(plane8);
+
 
 	return true;
 }
