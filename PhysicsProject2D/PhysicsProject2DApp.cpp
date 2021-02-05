@@ -5,6 +5,7 @@
 #include "glm\ext.hpp"
 #include "Gizmos.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -34,12 +35,14 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setGravity(glm::vec2(0, 0));
 
 
-	Sphere* ball1 = new Sphere(glm::vec2(40, 0), glm::vec2(0, -20), 2.0f, 2, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(0, -20), 3.0f, 1, glm::vec4(1, 0, 0, 1));
 	physicsScene->addActor(ball1);
 
-	Sphere* ball2 = new Sphere(glm::vec2(40, -40), glm::vec2(0, 20), 10.0f, 4, glm::vec4(1, 1, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(0, -20), 3.0f, 1, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(ball2);
 
+	Plane* plane = new Plane(glm::vec2(0.0f, 0.5f), 0);
+	physicsScene->addActor(plane);
 
 	return true;
 }

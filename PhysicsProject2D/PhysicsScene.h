@@ -22,13 +22,18 @@ public:
 
 	void debugScene();
 
-
 	void setGravity(const glm::vec2 gravity) { this->gravity = gravity; }
 	glm::vec2 getGravity() const { return gravity; }
 
 	void setTimeStep(const float timeStep) { this->timeStep = timeStep; }
 	float getTimeStep() const { return timeStep; }
 
+	void checkForCollision();
+
+	static bool Plane2Plane(PhysicsObject*, PhysicsObject*);
+	static bool Plane2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool Sphere2Plane(PhysicsObject*, PhysicsObject*);
+	static bool Sphere2Sphere(PhysicsObject*, PhysicsObject*);
 
 
 protected:
