@@ -137,10 +137,12 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 
 		if (sphereToPlane < sphere->getRadius() && direction < 0)
 		{
-			glm::vec2 thing = sphere->getVelocity() * sphere->getMass();
-			thing *= abs(plane->getNormal());
+			glm::vec2 newVel = sphere->getVelocity() + ((-(1 + 1) * glm::dot(sphere->getVelocity(), plane->getNormal())) * plane->getNormal());
+			glm::vec2 force = newVel - sphere->getVelocity();
+			// Because applyForce has mass built in, the force needs it too
+			force *= sphere->getMass();
 
-			sphere->applyForce(-thing * 2.0f);
+			sphere->applyForce(force);
 			return true;
 		}
 	}
