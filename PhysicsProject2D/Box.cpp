@@ -2,11 +2,11 @@
 #include <Gizmos.h>
 
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float width, float height, float elasticity, glm::vec4 color) : 
-	Rigidbody(BOX, position, velocity, rotation, mass, elasticity), extents(width, height)
+Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float width, float height, float elasticity, float linearDrag, float angularDrag, glm::vec4 color) :
+	Rigidbody(BOX, position, velocity, rotation, mass, elasticity, linearDrag, angularDrag), extents(width, height)
 {
 	this->color = color;
-	this->moment = (1.f / 12.f) * mass * (height * height + width * width);
+	this->moment = (1.0f / 3.0f) * mass * width * height;
 
 	this->localX = glm::vec2();
 	this->localY = glm::vec2();
@@ -40,23 +40,21 @@ void Box::makeGizmo()
 }
 
 
-bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal)
+bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal)
 {
-	float minX = INFINITY;
-	float minY = INFINITY;
-	float maxX = -INFINITY;
-	float maxY = -INFINITY;
+	float minX, minY, maxX, maxY;
 
 	float boxW = box.getWidth() * 2;
 	float boxH = box.getHeight() * 2;
 
 	int numLocalContacts = 0;
 	glm::vec2 localContact(0, 0);
+	bool first = true;
 
 
-	for (float x = -box.getWidth(); x < boxW; x += boxW)
+	for (float x = -box.getExtents().x; x < boxW; x += boxW)
 	{
-		for (float y = -box.getHeight(); y < boxH; y += boxH)
+		for (float y = -box.getExtents().y; y < boxH; y += boxH)
 		{
 			// Get the position in world space
 			glm::vec2 p = box.getPosition() + x * box.getLocalX() + y * box.getLocalY();
@@ -65,19 +63,19 @@ bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 
 			// Update the extents in each cardinal direction of our box's space
 			// ~ Extents along the seperating axes
-			if (p0.x < minX)
+			if (first || p0.x < minX)
 			{
 				minX = p0.x;
 			}
-			if (p0.x > maxX)
+			if (first || p0.x > maxX)
 			{
 				maxX = p0.x;
 			}
-			if (p0.y < minY)
+			if (first || p0.y < minY)
 			{
 				minY = p0.y;
 			}
-			if (p0.y > maxY)
+			if (first || p0.y > maxY)
 			{
 				maxY = p0.y;
 			}
@@ -89,6 +87,8 @@ bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 				numLocalContacts++;
 				localContact += p0;
 			}
+
+			first = false;
 		}
 	}
 

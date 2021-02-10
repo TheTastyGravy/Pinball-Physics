@@ -7,13 +7,17 @@ Plane::Plane() : PhysicsObject(PLANE)
 	this->normal = glm::vec2(0, 1);
 	this->distanceToOrigin = 0.0f;
 	this->color = glm::vec4(1);
+
+	this->elasticity = 1.0f;
 }
 
-Plane::Plane(glm::vec2 normal, float distance) : PhysicsObject(PLANE)
+Plane::Plane(glm::vec2 normal, float distance, float elasticity) : PhysicsObject(PLANE)
 {
 	this->normal = glm::normalize(normal);
 	this->distanceToOrigin = distance;
 	this->color = glm::vec4(0, 1, 0, 1);
+
+	this->elasticity = elasticity;
 }
 
 Plane::~Plane()
@@ -60,8 +64,11 @@ void Plane::resolveCollision(Rigidbody* otherActor, glm::vec2 contact)
 	// and mass, it will tell how much the contact point velocity will change the force we apply
 	float mass0 = 1.0f / (1.0f / otherActor->getMass() + (r * r) / otherActor->getMoment());
 
+	// Elasticity is the average between both objects
+	float e = 0.5f * (getElasticity() + otherActor->getElasticity());
+
 	// The plane does not move (static) so we only use the other actors velocity
-	float j = -(1 + otherActor->getElasticity()) * velocityIntoPlane * mass0;
+	float j = glm::dot(-(1 + e) * (vRel), normal) / (1 / otherActor->getMass());
 	glm::vec2 force = normal * j;
 	otherActor->applyForce(force, contact - otherActor->getPosition());
 }

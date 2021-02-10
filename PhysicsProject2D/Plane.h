@@ -8,13 +8,12 @@ class Plane : public PhysicsObject
 {
 public:
 	Plane();
-	Plane(glm::vec2 normal, float distance);
+	Plane(glm::vec2 normal, float distance, float elasticity = 1.0f);
 	~Plane();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 	virtual void makeGizmo();
 	virtual void debug() {};
-	virtual void resetPosition() {};
 
 	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact);
 
@@ -22,9 +21,13 @@ public:
 	float getDistance() const { return distanceToOrigin; }
 	glm::vec4 getColor() const { return color; }
 
+	float getElasticity() const { return elasticity; }
+
 protected:
 	glm::vec2 normal;
 	float distanceToOrigin;
 	glm::vec4 color;
+
+	float elasticity;
 	
 };

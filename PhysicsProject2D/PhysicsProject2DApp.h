@@ -21,4 +21,9 @@ protected:
 	aie::Font*			m_font;
 
 	PhysicsScene* physicsScene;
+
+public:
+	void drawRect();
+	void ballsInBox();
+
 };

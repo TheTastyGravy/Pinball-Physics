@@ -11,12 +11,10 @@
 
 PhysicsProject2DApp::PhysicsProject2DApp()
 {
-
 }
 
 PhysicsProject2DApp::~PhysicsProject2DApp()
 {
-
 }
 
 
@@ -36,37 +34,8 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setGravity(glm::vec2(0, 0));
 
 
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(40, -0), 3.0f, 1, 1, glm::vec4(1, 0, 0, 1));
-	physicsScene->addActor(ball1);
-	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-40, -0), 3.0f, 1, 1, glm::vec4(1, 1, 0, 1));
-	physicsScene->addActor(ball2);
-	Sphere* ball3 = new Sphere(glm::vec2(0, 60), glm::vec2(0, -40), 10.0f, 5, 1, glm::vec4(1, 0, 1, 1));
-	physicsScene->addActor(ball3);
-	Sphere* ball4 = new Sphere(glm::vec2(15, -50), glm::vec2(20, 30), 3.0f, 1, 1, glm::vec4(0, 0, 1, 1));
-	physicsScene->addActor(ball4);
-
-	Box* box1 = new Box(glm::vec2(0, -30), glm::vec2(), 0, 1, 2, 2);
-	physicsScene->addActor(box1);
-
-
-
-	Plane* plane1 = new Plane(glm::vec2(0.0f, 1.0f), -50);
-	physicsScene->addActor(plane1);
-	Plane* plane2 = new Plane(glm::vec2(0.0f, -1.0f), -50);
-	physicsScene->addActor(plane2);
-	Plane* plane3 = new Plane(glm::vec2(1.0f, 0.0f), -70);
-	physicsScene->addActor(plane3);
-	Plane* plane4 = new Plane(glm::vec2(-1.0f, 0.0f), -70);
-	physicsScene->addActor(plane4);
-
-	Plane* plane5 = new Plane(glm::vec2(1.0f, 1.0f), -60);
-	physicsScene->addActor(plane5);
-	Plane* plane6 = new Plane(glm::vec2(-1.0f, -1.0f), -60);
-	physicsScene->addActor(plane6);
-	Plane* plane7 = new Plane(glm::vec2(1.0f, -1.0f), -60);
-	physicsScene->addActor(plane7);
-	Plane* plane8 = new Plane(glm::vec2(-1.0f, 1.0f), -60);
-	physicsScene->addActor(plane8);
+	drawRect();
+	//ballsInBox();
 
 
 	return true;
@@ -116,4 +85,58 @@ void PhysicsProject2DApp::draw()
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+
+void PhysicsProject2DApp::drawRect()
+{
+	//physicsScene->addActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, 1, 0, 0, glm::vec4(1, 0, 0, 1)));
+	physicsScene->addActor(new Plane(glm::vec2(-0.65, 0.75), -25, 1));
+
+	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+	box1->setRotation(0.5f);
+
+	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+
+
+	physicsScene->addActor(box1);
+	physicsScene->addActor(box2);
+
+	box1->applyForce(glm::vec2(30, 0), glm::vec2(0));
+	box2->applyForce(glm::vec2(-15, 0), glm::vec2(0));
+
+	//Sphere* ball = new Sphere(glm::vec2(5, -10), glm::vec2(0), 1, 3, 1, 0, 0, glm::vec4(1, 0, 0, 1));
+	//ball->setRotation(0.5f);
+	//physicsScene->addActor(ball);
+}
+
+void PhysicsProject2DApp::ballsInBox()
+{
+	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(40, -0), 3.0f, 1, 1, 0, 0, glm::vec4(1, 0, 0, 1));
+	physicsScene->addActor(ball1);
+	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-40, -0), 3.0f, 1, 1, 0, 0, glm::vec4(1, 1, 0, 1));
+	physicsScene->addActor(ball2);
+	Sphere* ball3 = new Sphere(glm::vec2(0, 60), glm::vec2(0, -40), 10.0f, 5, 1, 0, 0, glm::vec4(1, 0, 1, 1));
+	physicsScene->addActor(ball3);
+	Sphere* ball4 = new Sphere(glm::vec2(15, -50), glm::vec2(20, 30), 3.0f, 1, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+	physicsScene->addActor(ball4);
+
+
+	Plane* plane1 = new Plane(glm::vec2(0.0f, 1.0f), -50);
+	physicsScene->addActor(plane1);
+	Plane* plane2 = new Plane(glm::vec2(0.0f, -1.0f), -50);
+	physicsScene->addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(1.0f, 0.0f), -70);
+	physicsScene->addActor(plane3);
+	Plane* plane4 = new Plane(glm::vec2(-1.0f, 0.0f), -70);
+	physicsScene->addActor(plane4);
+
+	Plane* plane5 = new Plane(glm::vec2(1.0f, 1.0f), -60);
+	physicsScene->addActor(plane5);
+	Plane* plane6 = new Plane(glm::vec2(-1.0f, -1.0f), -60);
+	physicsScene->addActor(plane6);
+	Plane* plane7 = new Plane(glm::vec2(1.0f, -1.0f), -60);
+	physicsScene->addActor(plane7);
+	Plane* plane8 = new Plane(glm::vec2(-1.0f, 1.0f), -60);
+	physicsScene->addActor(plane8);
 }

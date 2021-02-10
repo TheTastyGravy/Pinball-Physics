@@ -4,7 +4,7 @@
 class Rigidbody : public PhysicsObject
 {
 public:
-	Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity = 1.0f);
+	Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity = 1.0f, float linearDrag = 0.0f, float angularDrag = 0.0f);
 	~Rigidbody();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
@@ -23,14 +23,24 @@ public:
 	float getAngularVelocity() const { return angularVelocity; }
 	float getMoment() const { return moment; }
 
+
+	void setRotation(const float rotation) { this->rotation = rotation; }
+
 protected:
+	static const float MIN_LINEAR_THRESHHOLD;
+	static const float MIN_ANGULAR_THRESHHOLD;
+
 	glm::vec2 position;
 	glm::vec2 velocity;
-	float mass;
-	float elasticity;
-	float rotation;
 
+	float rotation;
 	float angularVelocity;
+
+	float mass;
+	float linearDrag;
+	float angularDrag;
+	float elasticity;
+	
 	float moment;
 
 };

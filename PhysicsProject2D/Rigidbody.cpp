@@ -1,15 +1,20 @@
 #include "Rigidbody.h"
 
-Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity) :
+const float Rigidbody::MIN_LINEAR_THRESHHOLD = 0.001f;
+const float Rigidbody::MIN_ANGULAR_THRESHHOLD = 0.001f;
+
+Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity, float linearDrag, float angularDrag) :
 	PhysicsObject(shapeID)
 {
 	this->position = position;
 	this->velocity = velocity;
 	this->rotation = rotation;
-	this->mass = mass;
-	this->elasticity = elasticity;
-
 	this->angularVelocity = 0;
+
+	this->mass = mass;
+	this->linearDrag = linearDrag;
+	this->angularDrag = angularDrag;
+	this->elasticity = elasticity;
 }
 
 Rigidbody::~Rigidbody()
@@ -17,19 +22,34 @@ Rigidbody::~Rigidbody()
 }
 
 
-void Rigidbody::fixedUpdate(glm::vec2 gravity, float timeStep)
+void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 {
-	applyForce(gravity * getMass() * timeStep, glm::vec2(0));
+	applyForce(gravity * getMass() * timestep, glm::vec2(0));
 
-	position += getVelocity() * timeStep;
-	rotation += angularVelocity * timeStep;
+	// Apply velocity
+	position += getVelocity() * timestep;
+	rotation += angularVelocity * timestep;
+
+	// Apply drag
+	velocity -= velocity * linearDrag * timestep;
+	angularVelocity -= angularVelocity * angularDrag * timestep;
+
+	// Stop the object if its velocity is too low
+	if (glm::length(velocity) < MIN_LINEAR_THRESHHOLD)
+	{
+		velocity = glm::vec2(0);
+	}
+	if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
+	{
+		angularVelocity = 0.0f;
+	}
 }
 
 
 void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
 	velocity += force / getMass();
-	angularVelocity += (force.y * pos.x - force.x * pos.y);
+	angularVelocity += (force.y * pos.x - force.x * pos.y) / getMoment();
 }
 
 
