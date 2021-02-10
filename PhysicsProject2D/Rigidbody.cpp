@@ -35,7 +35,7 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 	// Apply drag
 	velocity -= velocity * linearDrag * timestep;
 	angularVelocity -= angularVelocity * angularDrag * timestep;
-
+	
 	// Stop the object if its velocity is too low
 	if (glm::length(velocity) < MIN_LINEAR_THRESHHOLD)
 	{
@@ -72,7 +72,6 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 	float cp_velocity1 = glm::dot(velocity, normal) - radius1 * angularVelocity;
 	// Velocities of contact point of the other object
 	float cp_velocity2 = glm::dot(otherActor->getVelocity(), normal) + radius2 * otherActor->getAngularVelocity();
-
 
 	if (cp_velocity1 > cp_velocity2) // They are moving closer
 	{

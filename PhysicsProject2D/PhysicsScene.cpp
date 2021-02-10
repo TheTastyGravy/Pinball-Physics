@@ -196,9 +196,9 @@ bool PhysicsScene::Box2Plane(PhysicsObject* objBox, PhysicsObject* objPlane)
 		glm::vec2 planeOrigin = plane->getNormal() * plane->getDistance();
 
 		// Check all the corners for a collision with the plane
-		for (float x = -box->getExtents().x; x < box->getWidth(); x += box->getWidth())
+		for (float x = -box->getExtents().x; x < box->getWidth() * 2; x += box->getWidth() * 2)
 		{
-			for (float y = -box->getExtents().y; y < box->getHeight(); y += box->getHeight())
+			for (float y = -box->getExtents().y; y < box->getHeight() * 2; y += box->getHeight() * 2)
 			{
 				// Get the position of the corners in world space
 				glm::vec2 p = box->getPosition() + x * box->getLocalX() + y * box->getLocalY();
@@ -268,7 +268,7 @@ bool PhysicsScene::Box2Sphere(PhysicsObject* objBox, PhysicsObject* objSphere)
 		glm::vec2 circleToBox = sphere->getPosition() - closestPointOnBoxWorld;
 		if (glm::length(circleToBox) < sphere->getRadius())
 		{
-			glm::vec2 dir = glm::normalize(circlePosBox);
+			glm::vec2 dir = glm::normalize(circleToBox);
 			glm::vec2 contact = closestPointOnBoxWorld;
 			box->resolveCollision(sphere, contact, &dir);
 			return true;
@@ -302,7 +302,6 @@ bool PhysicsScene::Box2Box(PhysicsObject* objBox1, PhysicsObject* objBox2)
 			box1->resolveCollision(box2, contact / float(numContact), &norm);
 			return true;
 		}
-		
 	}
 
 	return false;

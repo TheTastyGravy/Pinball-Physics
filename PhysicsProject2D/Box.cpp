@@ -44,8 +44,8 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 {
 	float minX, minY, maxX, maxY;
 
-	float boxW = box.getWidth() * 2;
-	float boxH = box.getHeight() * 2;
+	float boxW = box.getWidth();
+	float boxH = box.getHeight();
 
 	int numLocalContacts = 0;
 	glm::vec2 localContact(0, 0);
