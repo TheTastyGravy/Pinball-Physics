@@ -11,19 +11,22 @@ public:
 	virtual void debug() {}
 
 	void applyForce(glm::vec2 force, glm::vec2 pos);
-	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
+	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal = nullptr, float pen = 0);
 
 
 	glm::vec2 getPosition() const { return position; }
 	glm::vec2 getVelocity() const { return velocity; }
-	float getMass() const { return mass; }
-	float getElasticity() const { return elasticity; }
 	float getRotation() const { return rotation; }
-
 	float getAngularVelocity() const { return angularVelocity; }
+
+	float getMass() const { return mass; }
+	float getLinearDrag() const { return linearDrag; }
+	float getAngularDrag() const { return angularDrag; }
+
 	float getMoment() const { return moment; }
 
 
+	void setPosition(const glm::vec2 position) { this->position = position; }
 	void setRotation(const float rotation) { this->rotation = rotation; }
 
 protected:
@@ -39,7 +42,6 @@ protected:
 	float mass;
 	float linearDrag;
 	float angularDrag;
-	float elasticity;
 	
 	float moment;
 

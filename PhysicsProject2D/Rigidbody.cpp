@@ -1,10 +1,11 @@
 #include "Rigidbody.h"
+#include "PhysicsScene.h"
 
 const float Rigidbody::MIN_LINEAR_THRESHHOLD = 0.001f;
 const float Rigidbody::MIN_ANGULAR_THRESHHOLD = 0.001f;
 
 Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity, float linearDrag, float angularDrag) :
-	PhysicsObject(shapeID)
+	PhysicsObject(shapeID, elasticity)
 {
 	this->position = position;
 	this->velocity = velocity;
@@ -14,7 +15,6 @@ Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 	this->mass = mass;
 	this->linearDrag = linearDrag;
 	this->angularDrag = angularDrag;
-	this->elasticity = elasticity;
 
 	this->isKinematic = false;
 }
@@ -55,7 +55,7 @@ void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)
 }
 
 
-void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal)
+void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal, float pen)
 {
 	// Find the vector between their centers, or use the provided
 	// direction of force, and make sure its normalized
@@ -86,5 +86,10 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 		glm::vec2 impact = (1.0f + elasticity) * mass1 * mass2 / (mass1 + mass2) * (cp_velocity1 - cp_velocity2) * normal;
 		applyForce(-impact, contact - position);
 		otherActor->applyForce(impact, contact - otherActor->getPosition());
+
+		if (pen > 0)
+		{
+			PhysicsScene::applyContactForces(this, otherActor, normal, pen);
+		}
 	}
 }

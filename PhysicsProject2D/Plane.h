@@ -21,13 +21,9 @@ public:
 	float getDistance() const { return distanceToOrigin; }
 	glm::vec4 getColor() const { return color; }
 
-	float getElasticity() const { return elasticity; }
-
 protected:
 	glm::vec2 normal;
 	float distanceToOrigin;
 	glm::vec4 color;
-
-	float elasticity;
 	
 };

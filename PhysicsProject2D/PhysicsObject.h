@@ -24,12 +24,16 @@ public:
 	bool getKinematic() const { return isKinematic; }
 	void setKinematic(const bool state) { this->isKinematic = state; }
 
+	float getElasticity() const { return elasticity; }
+
 protected:
 	ShapeType shapeID;
 	bool isKinematic;
+	float elasticity;
 
-	PhysicsObject(ShapeType shapeID) :
-		shapeID(shapeID)
+	PhysicsObject(ShapeType shapeID, float elasticity) :
+		shapeID(shapeID),
+		elasticity(elasticity)
 	{}
 
 };

@@ -114,6 +114,18 @@ void PhysicsScene::checkForCollision()
 	}
 }
 
+void PhysicsScene::applyContactForces(Rigidbody* actor1, Rigidbody* actor2, glm::vec2 collisionNorm, float pen)
+{
+	float body2Mass = actor2 ? actor2->getMass() : INT_MAX;
+	float body1Factor = body2Mass / (actor1->getMass() + body2Mass);
+
+	actor1->setPosition(actor1->getPosition() - body1Factor * collisionNorm * pen);
+	if (actor2)
+	{
+		actor2->setPosition(actor2->getPosition() + (1 - body1Factor) * collisionNorm * pen);
+	}
+}
+
 
 bool PhysicsScene::Plane2Plane(PhysicsObject* objPlane1, PhysicsObject* objPlane2)
 {
@@ -163,11 +175,12 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere1, PhysicsObject* objSp
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
 		float dist = glm::distance(sphere1->getPosition(), sphere2->getPosition());
+		float pen = sphere1->getRadius() + sphere2->getRadius() - dist;
 
-		if (dist < sphere1->getRadius() + sphere2->getRadius())
+		if (pen > 0)
 		{
 			// The contact is the point between them
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()), nullptr, pen);
 			return true;
 		}
 	}
@@ -266,11 +279,12 @@ bool PhysicsScene::Box2Sphere(PhysicsObject* objBox, PhysicsObject* objSphere)
 		glm::vec2 closestPointOnBoxWorld = box->getPosition() + closestPointOnBox.x * box->getLocalX() + closestPointOnBox.y * box->getLocalY();
 
 		glm::vec2 circleToBox = sphere->getPosition() - closestPointOnBoxWorld;
-		if (glm::length(circleToBox) < sphere->getRadius())
+		float pen = sphere->getRadius() - glm::length(circleToBox);
+		if (pen > 0)
 		{
 			glm::vec2 dir = glm::normalize(circleToBox);
 			glm::vec2 contact = closestPointOnBoxWorld;
-			box->resolveCollision(sphere, contact, &dir);
+			box->resolveCollision(sphere, contact, &dir, pen);
 			return true;
 		}
 	}
@@ -291,7 +305,6 @@ bool PhysicsScene::Box2Box(PhysicsObject* objBox1, PhysicsObject* objBox2)
 		int numContact = 0;
 
 		box1->checkBoxCorners(*box2, contact, numContact, pen, norm);
-
 		if (box2->checkBoxCorners(*box1, contact, numContact, pen, norm))
 		{
 			norm = -norm;
@@ -299,7 +312,7 @@ bool PhysicsScene::Box2Box(PhysicsObject* objBox1, PhysicsObject* objBox2)
 
 		if (pen > 0)
 		{
-			box1->resolveCollision(box2, contact / float(numContact), &norm);
+			box1->resolveCollision(box2, contact / float(numContact), &norm, pen);
 			return true;
 		}
 	}

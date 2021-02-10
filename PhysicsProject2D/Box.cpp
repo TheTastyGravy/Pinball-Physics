@@ -8,8 +8,8 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, flo
 	this->color = color;
 	this->moment = (1.0f / 3.0f) * mass * width * height;
 
-	//this->localX = glm::vec2();
-	//this->localY = glm::vec2();
+	this->localX = glm::vec2();
+	this->localY = glm::vec2();
 }
 
 Box::~Box()
@@ -44,8 +44,8 @@ bool Box::checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 {
 	float minX, minY, maxX, maxY;
 
-	float boxW = box.getWidth();
-	float boxH = box.getHeight();
+	float boxW = box.getWidth() * 2.f;
+	float boxH = box.getHeight() * 2.f;
 
 	int numLocalContacts = 0;
 	glm::vec2 localContact(0, 0);

@@ -90,13 +90,17 @@ void PhysicsProject2DApp::draw()
 
 void PhysicsProject2DApp::drawRect()
 {
-	physicsScene->addActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, 1, 0, 0, glm::vec4(1, 0, 0, 1)));
-	physicsScene->addActor(new Plane(glm::vec2(-0.65, 0.75), -25, 1));
+	float linDrag = 0.1f;
+	float angDrag = 0.1f;
 
-	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+	physicsScene->addActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, 1, linDrag, angDrag, glm::vec4(1, 0, 0, 1)));
+	physicsScene->addActor(new Plane(glm::vec2(-0.65, 0.75), -25, 0.5f));
+	physicsScene->addActor(new Plane(glm::vec2(0.05, 1), -25, 0.5f));
+
+	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 0, 4, 8, 4, 1, linDrag, angDrag, glm::vec4(0, 0, 1, 1));
 	box1->setRotation(45.f);
 
-	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 0, 4, 8, 4, 1, linDrag, angDrag, glm::vec4(0, 0, 1, 1));
 
 
 	physicsScene->addActor(box1);
@@ -105,7 +109,7 @@ void PhysicsProject2DApp::drawRect()
 	box1->applyForce(glm::vec2(30, 0), glm::vec2(0));
 	box2->applyForce(glm::vec2(-15, 0), glm::vec2(0));
 
-	Sphere* ball = new Sphere(glm::vec2(5, -10), glm::vec2(5, 5), 1, 3, 1, 0, 0, glm::vec4(1, 0, 0, 1));
+	Sphere* ball = new Sphere(glm::vec2(5, -10), glm::vec2(5, 5), 1, 3, 1, linDrag, angDrag, glm::vec4(1, 0, 0, 1));
 	ball->setRotation(0.5f);
 	physicsScene->addActor(ball);
 }
