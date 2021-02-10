@@ -145,12 +145,9 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 
 		if (sphereToPlane < sphere->getRadius() && direction < 0)
 		{
-			glm::vec2 newVel = sphere->getVelocity() + ((-(1 + 1) * glm::dot(sphere->getVelocity(), plane->getNormal())) * plane->getNormal());
-			glm::vec2 force = newVel - sphere->getVelocity();
-			// Because applyForce has mass built in, the force needs it too
-			force *= sphere->getMass();
+			glm::vec2 contact = sphere->getPosition() + (plane->getNormal() * -sphere->getRadius());
+			plane->resolveCollision(sphere, contact);
 
-			sphere->applyForce(force);
 			return true;
 		}
 	}
@@ -167,10 +164,10 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere1, PhysicsObject* objSp
 	{
 		float dist = glm::distance(sphere1->getPosition(), sphere2->getPosition());
 
-		float penetration = sphere1->getRadius() + sphere2->getRadius() - dist;
-		if (penetration > 0)
+		if (dist < sphere1->getRadius() + sphere2->getRadius())
 		{
-			sphere1->resolveCollision(sphere2);
+			// The contact is the point between them
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
 		}
 	}

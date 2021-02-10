@@ -1,19 +1,12 @@
 #include "Box.h"
 #include <Gizmos.h>
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float width, float height) : 
-	Rigidbody(BOX, position, velocity, rotation, mass), extents(width, height)
-{
-	this->color = glm::vec4(1, 0, 0, 1);
 
-	this->localX = glm::vec2();
-	this->localY = glm::vec2();
-}
-
-Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float width, float height, glm::vec4 color) : 
-	Rigidbody(BOX, position, velocity, rotation, mass), extents(width, height)
+Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float width, float height, float elasticity, glm::vec4 color) : 
+	Rigidbody(BOX, position, velocity, rotation, mass, elasticity), extents(width, height)
 {
 	this->color = color;
+	this->moment = (1.f / 12.f) * mass * (height * height + width * width);
 
 	this->localX = glm::vec2();
 	this->localY = glm::vec2();
@@ -119,7 +112,6 @@ bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 	numContacts++;
 
 	// Find the minimum penetration vector as a penetration amount and normal
-
 	float pen0 = extents.x - minX;
 	if (pen0 > 0 && (pen0 < pen || pen == 0))
 	{

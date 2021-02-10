@@ -36,10 +36,14 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setGravity(glm::vec2(0, 0));
 
 
-	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(20, -20), 3.0f, 1, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(40, -0), 3.0f, 1, 1, glm::vec4(1, 0, 0, 1));
 	physicsScene->addActor(ball1);
-	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-20, -20), 3.0f, 1, glm::vec4(1, 1, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-40, -0), 3.0f, 1, 1, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(ball2);
+	Sphere* ball3 = new Sphere(glm::vec2(0, 60), glm::vec2(0, -40), 10.0f, 5, 1, glm::vec4(1, 0, 1, 1));
+	physicsScene->addActor(ball3);
+	Sphere* ball4 = new Sphere(glm::vec2(15, -50), glm::vec2(20, 30), 3.0f, 1, 1, glm::vec4(0, 0, 1, 1));
+	physicsScene->addActor(ball4);
 
 	Box* box1 = new Box(glm::vec2(0, -30), glm::vec2(), 0, 1, 2, 2);
 	physicsScene->addActor(box1);
