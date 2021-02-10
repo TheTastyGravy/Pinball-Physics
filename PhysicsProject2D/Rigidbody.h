@@ -4,7 +4,7 @@
 class Rigidbody : public PhysicsObject
 {
 public:
-	Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass);
+	Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass, float elasticity = 1.0f);
 	~Rigidbody();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
@@ -16,17 +16,19 @@ public:
 	void resolveCollision(Rigidbody* otherActor);
 
 
-	virtual bool checkCollision(PhysicsObject* other) = 0;
-
-	glm::vec2 getPosition() { return position; }
-	glm::vec2 getVelocity() { return velocity; }
-	float getMass() { return mass; }
-	float getRotation() { return rotation; }
+	glm::vec2 getPosition() const { return position; }
+	glm::vec2 getVelocity() const { return velocity; }
+	float getMass() const { return mass; }
+	float getRotation() const { return rotation; }
 
 protected:
 	glm::vec2 position;
 	glm::vec2 velocity;
 	float mass;
+	float elasticity;
 	float rotation;
+
+	float angularVelocity;
+	float moment;
 
 };

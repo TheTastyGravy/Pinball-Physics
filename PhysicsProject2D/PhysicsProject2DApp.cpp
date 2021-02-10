@@ -6,6 +6,7 @@
 #include "Gizmos.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -37,9 +38,13 @@ bool PhysicsProject2DApp::startup()
 
 	Sphere* ball1 = new Sphere(glm::vec2(-40, 20), glm::vec2(20, -20), 3.0f, 1, glm::vec4(1, 0, 0, 1));
 	physicsScene->addActor(ball1);
-
 	Sphere* ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(-20, -20), 3.0f, 1, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(ball2);
+
+	Box* box1 = new Box(glm::vec2(0, -30), glm::vec2(), 0, 1, 2, 2);
+	physicsScene->addActor(box1);
+
+
 
 	Plane* plane1 = new Plane(glm::vec2(0.0f, 1.0f), -50);
 	physicsScene->addActor(plane1);

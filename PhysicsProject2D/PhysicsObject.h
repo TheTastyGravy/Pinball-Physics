@@ -7,6 +7,7 @@ enum ShapeType
 {
 	PLANE = 0,
 	SPHERE,
+	BOX,
 	SHAPE_COUNT
 };
 
@@ -20,7 +21,7 @@ public:
 	
 	virtual void resetPosition() {};
 
-	ShapeType getShapeID() { return shapeID; }
+	ShapeType getShapeID() const { return shapeID; }
 
 protected:
 	ShapeType shapeID;

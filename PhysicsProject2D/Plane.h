@@ -15,9 +15,9 @@ public:
 	virtual void debug() {};
 	virtual void resetPosition() {};
 
-	glm::vec2 getNormal() { return normal; }
-	float getDistance() { return distanceToOrigin; }
-	glm::vec4 getColor() { return color; }
+	glm::vec2 getNormal() const { return normal; }
+	float getDistance() const { return distanceToOrigin; }
+	glm::vec4 getColor() const { return color; }
 
 protected:
 	glm::vec2 normal;

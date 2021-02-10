@@ -3,13 +3,16 @@
 #include "Rigidbody.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 #include <iostream>
 
 // Function pointer array for handling our collisions
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 static fn collisioFunctionArray[] =
 {
-	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere, PhysicsScene::Sphere2Plane, PhysicsScene::Sphere2Sphere
+	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere, PhysicsScene::Plane2Box, 
+	PhysicsScene::Sphere2Plane, PhysicsScene::Sphere2Sphere, PhysicsScene::Sphere2Box, 
+	PhysicsScene::Box2Plane, PhysicsScene::Box2Sphere, PhysicsScene::Box2Box
 };
 
 
@@ -122,6 +125,11 @@ bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject* objSpher
 	return Sphere2Plane(objSphere, objPlane);
 }
 
+bool PhysicsScene::Plane2Box(PhysicsObject* objPlane, PhysicsObject* objBox)
+{
+	return Box2Plane(objBox, objPlane);
+}
+
 bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlane)
 {
 	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
@@ -166,6 +174,35 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere1, PhysicsObject* objSp
 			return true;
 		}
 	}
+
+	return false;
+}
+
+bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
+{
+	return Box2Sphere(objBox, objSphere);
+}
+
+bool PhysicsScene::Box2Plane(PhysicsObject* objBox, PhysicsObject* objPlane)
+{
+	Box* box = dynamic_cast<Box*>(objBox);
+	Plane* plane = dynamic_cast<Plane*>(objPlane);
+
+	return false;
+}
+
+bool PhysicsScene::Box2Sphere(PhysicsObject* objBox, PhysicsObject* objSphere)
+{
+	Box* box = dynamic_cast<Box*>(objBox);
+	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
+
+	return false;
+}
+
+bool PhysicsScene::Box2Box(PhysicsObject* objBox1, PhysicsObject* objBox2)
+{
+	Box* box1 = dynamic_cast<Box*>(objBox1);
+	Box* box2 = dynamic_cast<Box*>(objBox2);
 
 	return false;
 }

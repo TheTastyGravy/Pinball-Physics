@@ -8,10 +8,9 @@ public:
 	~Sphere();
 
 	virtual void makeGizmo();
-	bool checkCollision(PhysicsObject* other);
 
-	float getRadius() { return radius; }
-	glm::vec4 getColor() { return color; }
+	float getRadius() const { return radius; }
+	glm::vec4 getColor() const { return color; }
 
 protected:
 	float radius;

@@ -22,7 +22,6 @@ Plane::~Plane()
 
 void Plane::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
-
 }
 
 void Plane::makeGizmo()

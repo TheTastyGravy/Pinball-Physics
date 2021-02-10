@@ -18,19 +18,19 @@ void Sphere::makeGizmo()
 	aie::Gizmos::add2DCircle(position, radius, 12, color);
 }
 
-bool Sphere::checkCollision(PhysicsObject* other)
-{
-	Sphere* sphere = dynamic_cast<Sphere*>(other);
-
-	if (sphere != nullptr)
-	{
-		float dist = glm::distance(getPosition(), sphere->getPosition());
-
-		if (getRadius() + sphere->getRadius() > dist)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
+//bool Sphere::checkCollision(PhysicsObject* other)
+//{
+//	Sphere* sphere = dynamic_cast<Sphere*>(other);
+//
+//	if (sphere != nullptr)
+//	{
+//		float dist = glm::distance(getPosition(), sphere->getPosition());
+//
+//		if (getRadius() + sphere->getRadius() > dist)
+//		{
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
