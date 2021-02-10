@@ -94,7 +94,7 @@ void PhysicsProject2DApp::drawRect()
 	physicsScene->addActor(new Plane(glm::vec2(-0.65, 0.75), -25, 1));
 
 	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
-	box1->setRotation(0.5f);
+	box1->setRotation(45.f);
 
 	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 0, 4, 8, 4, 1, 0, 0, glm::vec4(0, 0, 1, 1));
 

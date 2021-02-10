@@ -15,6 +15,8 @@ Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 	this->linearDrag = linearDrag;
 	this->angularDrag = angularDrag;
 	this->elasticity = elasticity;
+
+	this->isKinematic = false;
 }
 
 Rigidbody::~Rigidbody()

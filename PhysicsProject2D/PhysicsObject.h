@@ -18,13 +18,15 @@ public:
 	virtual void makeGizmo() = 0;
 
 	virtual void debug() = 0;
-	
-	virtual void resetPosition() {};
 
 	ShapeType getShapeID() const { return shapeID; }
 
+	bool getKinematic() const { return isKinematic; }
+	void setKinematic(const bool state) { this->isKinematic = state; }
+
 protected:
 	ShapeType shapeID;
+	bool isKinematic;
 
 	PhysicsObject(ShapeType shapeID) :
 		shapeID(shapeID)

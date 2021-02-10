@@ -283,5 +283,27 @@ bool PhysicsScene::Box2Box(PhysicsObject* objBox1, PhysicsObject* objBox2)
 	Box* box1 = dynamic_cast<Box*>(objBox1);
 	Box* box2 = dynamic_cast<Box*>(objBox2);
 
+	if (box1 != nullptr && box2 != nullptr)
+	{
+		glm::vec2 norm(0);
+		glm::vec2 contact(0);
+		float pen = 0;
+		int numContact = 0;
+
+		box1->checkBoxCorners(*box2, contact, numContact, pen, norm);
+
+		if (box2->checkBoxCorners(*box1, contact, numContact, pen, norm))
+		{
+			norm = -norm;
+		}
+
+		if (pen > 0)
+		{
+			box1->resolveCollision(box2, contact / float(numContact), &norm);
+			return true;
+		}
+		
+	}
+
 	return false;
 }

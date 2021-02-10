@@ -8,8 +8,8 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, flo
 	this->color = color;
 	this->moment = (1.0f / 3.0f) * mass * width * height;
 
-	this->localX = glm::vec2();
-	this->localY = glm::vec2();
+	//this->localX = glm::vec2();
+	//this->localY = glm::vec2();
 }
 
 Box::~Box()
