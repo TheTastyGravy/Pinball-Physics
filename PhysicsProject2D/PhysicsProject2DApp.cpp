@@ -8,6 +8,7 @@
 #include "Plane.h"
 #include "Box.h"
 #include "Spring.h"
+#include "Bouncer.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -38,7 +39,10 @@ bool PhysicsProject2DApp::startup()
 	//drawRect();
 	//ballsInBox();
 	//springTest(10);
-	triggerTest();
+	//triggerTest();
+	springLauncher();
+
+	//physicsScene->addActor(new Bouncer(glm::vec2(30, -10), 5, 5));
 
 
 	return true;
@@ -238,4 +242,34 @@ void PhysicsProject2DApp::triggerTest()
 	//display when an object enters or exits the trigger
 	ball2->onTriggerEnter = [=](PhysicsObject* other) { std::cout << "Entered: " << other << std::endl; };
 	ball2->onTriggerExit = [=](PhysicsObject* other) { std::cout << "Exited: " << other << std::endl; };
+}
+
+void PhysicsProject2DApp::springLauncher()
+{
+	Plane* plane1 = new Plane(glm::vec2(1, 0), -8);
+	physicsScene->addActor(plane1);
+	Plane* plane2 = new Plane(glm::vec2(-1, 0), -8);
+	physicsScene->addActor(plane2);
+
+
+	Sphere* ball = new Sphere(glm::vec2(0, 3), glm::vec2(0), 5, 7);
+	physicsScene->addActor(ball);
+
+
+	Box* springBase = new Box(glm::vec2(0, -50), glm::vec2(0), 0, 10, 8, 3);
+	springBase->setKinematic(true);
+	physicsScene->addActor(springBase);
+
+	Box* springTop = new Box(glm::vec2(0, -40), glm::vec2(0), 0, 5, 8, 3, 0.3f);
+	physicsScene->addActor(springTop);
+
+	physicsScene->addActor(new Spring(springBase, springTop, 10, 400, 50));
+
+
+	Box* stopper1 = new Box(glm::vec2(7, 0), glm::vec2(0), 0, 10, 1, 1, 0);
+	stopper1->setKinematic(true);
+	physicsScene->addActor(stopper1);
+	Box* stopper2 = new Box(glm::vec2(-7, 0), glm::vec2(0), 0, 10, 1, 1, 0);
+	stopper2->setKinematic(true);
+	physicsScene->addActor(stopper2);
 }

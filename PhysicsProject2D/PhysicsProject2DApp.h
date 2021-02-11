@@ -32,5 +32,6 @@ public:
 	void ballsInBox();
 	void springTest(int amount);
 	void triggerTest();
+	void springLauncher();
 
 };
