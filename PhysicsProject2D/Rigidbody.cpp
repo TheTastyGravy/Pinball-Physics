@@ -26,6 +26,14 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 {
+	if (isKinematic)
+	{
+		velocity = glm::vec2(0);
+		angularVelocity = 0;
+
+		return;
+	}
+
 	applyForce(gravity * getMass() * timestep, glm::vec2(0));
 
 	// Apply velocity
@@ -39,7 +47,10 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 	// Stop the object if its velocity is too low
 	if (glm::length(velocity) < MIN_LINEAR_THRESHHOLD)
 	{
-		velocity = glm::vec2(0);
+		if (glm::length(velocity) < glm::length(gravity) * linearDrag * timestep)
+		{
+			velocity = glm::vec2(0);
+		}
 	}
 	if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
 	{
@@ -92,4 +103,10 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 			PhysicsScene::applyContactForces(this, otherActor, normal, pen);
 		}
 	}
+}
+
+
+glm::vec2 Rigidbody::toWorld(const glm::vec2 localPos) const
+{
+	return position + localX * localPos.x + localY * localPos.y;
 }

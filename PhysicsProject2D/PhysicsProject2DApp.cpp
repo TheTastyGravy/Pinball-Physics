@@ -7,6 +7,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include "Spring.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -31,11 +32,12 @@ bool PhysicsProject2DApp::startup()
 	physicsScene = new PhysicsScene();
 	// A smaller timestep will give a more accurate simulation, at the cost of speed
 	physicsScene->setTimeStep(0.01f);
-	physicsScene->setGravity(glm::vec2(0, 0));
+	physicsScene->setGravity(glm::vec2(0, -10));
 
 
 	drawRect();
 	//ballsInBox();
+	//springTest(10);
 
 
 	return true;
@@ -143,4 +145,33 @@ void PhysicsProject2DApp::ballsInBox()
 	physicsScene->addActor(plane7);
 	Plane* plane8 = new Plane(glm::vec2(-1.0f, 1.0f), -60);
 	physicsScene->addActor(plane8);
+}
+
+void PhysicsProject2DApp::springTest(int amount)
+{
+	Sphere* prev = nullptr;
+	for (int i = 0; i < amount; i++)
+	{
+		// This will need to spawn the sphere at the bottom of the previous one, to
+		// make a pendulum that is effected by gravity
+		Sphere* sphere = new Sphere(glm::vec2(i * 5, 30 - i * 3), glm::vec2(0), 5, 2, 1, 0, 0, glm::vec4(0, 0, 1, 1));
+
+		if (i == 0)
+		{
+			sphere->setKinematic(true);
+		}
+
+		physicsScene->addActor(sphere);
+
+		if (prev)
+		{
+			physicsScene->addActor(new Spring(sphere, prev, 10, 500));
+		}
+
+		prev = sphere;
+	}
+
+	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.5f, 20, 8, 2);
+	box->setKinematic(true);
+	physicsScene->addActor(box);
 }

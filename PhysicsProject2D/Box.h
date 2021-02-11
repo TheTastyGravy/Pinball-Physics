@@ -15,16 +15,9 @@ public:
 	float getHeight() const { return extents.y; }
 	glm::vec2 getExtents() const { return extents; }
 
-	glm::vec2 getLocalX() const { return localX; }
-	glm::vec2 getLocalY() const { return localY; }
-
 protected:
 	// The half extents of the box
 	glm::vec2 extents;
 	glm::vec4 color;
-
-	// These will store the local x and y axes of the box based on its angle of rotation
-	glm::vec2 localX;
-	glm::vec2 localY;
 
 };

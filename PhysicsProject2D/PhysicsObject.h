@@ -5,6 +5,7 @@
 
 enum ShapeType
 {
+	JOINT = -1,
 	PLANE = 0,
 	SPHERE,
 	BOX,
@@ -17,7 +18,7 @@ public:
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep) = 0;
 	virtual void makeGizmo() = 0;
 
-	virtual void debug() = 0;
+	virtual void debug() const = 0;
 
 	ShapeType getShapeID() const { return shapeID; }
 

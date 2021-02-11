@@ -8,7 +8,7 @@ public:
 	~Rigidbody();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-	virtual void debug() {}
+	virtual void debug() const {}
 
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal = nullptr, float pen = 0);
@@ -19,15 +19,20 @@ public:
 	float getRotation() const { return rotation; }
 	float getAngularVelocity() const { return angularVelocity; }
 
-	float getMass() const { return mass; }
+	float getMass() const { return isKinematic ? INT_MAX : mass; }
 	float getLinearDrag() const { return linearDrag; }
 	float getAngularDrag() const { return angularDrag; }
 
-	float getMoment() const { return moment; }
+	float getMoment() const { return isKinematic ? INT_MAX : moment; }
+
+	glm::vec2 getLocalX() const { return localX; }
+	glm::vec2 getLocalY() const { return localY; }
 
 
 	void setPosition(const glm::vec2 position) { this->position = position; }
 	void setRotation(const float rotation) { this->rotation = rotation; }
+
+	glm::vec2 toWorld(const glm::vec2 localPos) const;
 
 protected:
 	static const float MIN_LINEAR_THRESHHOLD;
@@ -35,14 +40,16 @@ protected:
 
 	glm::vec2 position;
 	glm::vec2 velocity;
-
 	float rotation;
 	float angularVelocity;
 
 	float mass;
 	float linearDrag;
 	float angularDrag;
-	
 	float moment;
+
+	// These will store the local x and y axes of the box based on its angle of rotation
+	glm::vec2 localX;
+	glm::vec2 localY;
 
 };

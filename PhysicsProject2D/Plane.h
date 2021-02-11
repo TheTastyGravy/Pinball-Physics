@@ -13,7 +13,7 @@ public:
 
 	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
 	virtual void makeGizmo();
-	virtual void debug() {};
+	virtual void debug() const {};
 
 	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact);
 

@@ -25,5 +25,6 @@ protected:
 public:
 	void drawRect();
 	void ballsInBox();
+	void springTest(int amount);
 
 };
