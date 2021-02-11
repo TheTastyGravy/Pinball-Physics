@@ -17,6 +17,8 @@ public:
 
 	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact);
 
+	bool isInside(glm::vec2 point) final { return false; };
+
 	glm::vec2 getNormal() const { return normal; }
 	float getDistance() const { return distanceToOrigin; }
 	glm::vec4 getColor() const { return color; }

@@ -1,5 +1,6 @@
 #include "Rigidbody.h"
 #include "PhysicsScene.h"
+#include <iostream>
 
 const float Rigidbody::MIN_LINEAR_THRESHHOLD = 0.001f;
 const float Rigidbody::MIN_ANGULAR_THRESHHOLD = 0.001f;
@@ -17,6 +18,7 @@ Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 	this->angularDrag = angularDrag;
 
 	this->isKinematic = false;
+	this->isTriggerFlag = false;
 }
 
 Rigidbody::~Rigidbody()
@@ -26,6 +28,34 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 {
+	// Checks if it is a trigger
+	if (isTrigger())
+	{
+		// This will let us check every object that is inside a trigger object and call onTriggerEnter on if they
+		// havent registered inside the trigger this frame, they must have exited so we can remove them from the list and then call onTriggerExit
+		for (auto it = objectsInside.begin(); it != objectsInside.end(); it++)
+		{
+			if (std::find(objectsInsideThisFrame.begin(), objectsInsideThisFrame.end(), *it) == objectsInsideThisFrame.end())
+			{
+				if (onTriggerExit)
+				{
+					onTriggerExit(*it);
+				}
+
+				it = objectsInside.erase(it);
+				if (it == objectsInside.end())
+				{
+					break;
+				}
+			}
+		}
+
+		// Clear the list now for the next frame
+		objectsInsideThisFrame.clear();
+	}
+
+
+	// Kinematic objects dont react to forces
 	if (isKinematic)
 	{
 		velocity = glm::vec2(0);
@@ -68,6 +98,29 @@ void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)
 
 void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal, float pen)
 {
+	bool collidingWithTrigger = false;
+
+	// Register that these two objects have overlapped this frame. This is only used by triggers
+	if (isTrigger())
+	{
+		objectsInsideThisFrame.push_back(otherActor);
+		triggerEnter(otherActor);
+		collidingWithTrigger = true;
+	}
+	if (otherActor->isTrigger())
+	{
+		otherActor->objectsInsideThisFrame.push_back(this);
+		otherActor->triggerEnter(this);
+		collidingWithTrigger = true;
+	}
+
+	// Dont collide with triggers
+	if (collidingWithTrigger)
+	{
+		return;
+	}
+	
+
 	// Find the vector between their centers, or use the provided
 	// direction of force, and make sure its normalized
 	glm::vec2 normal = glm::normalize(collisionNormal ? *collisionNormal : otherActor->getPosition() - getPosition());
@@ -98,6 +151,17 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 		applyForce(-impact, contact - position);
 		otherActor->applyForce(impact, contact - otherActor->getPosition());
 
+		// Trigger collision callbacks
+		if (collisionCallback)
+			{
+				collisionCallback(otherActor);
+			}
+		if (otherActor->collisionCallback)
+			{
+				otherActor->collisionCallback(this);
+			}
+
+		// Apply contact forces to prevent objects from being inside eachother
 		if (pen > 0)
 		{
 			PhysicsScene::applyContactForces(this, otherActor, normal, pen);
@@ -109,4 +173,17 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 glm::vec2 Rigidbody::toWorld(const glm::vec2 localPos) const
 {
 	return position + localX * localPos.x + localY * localPos.y;
+}
+
+
+void Rigidbody::triggerEnter(PhysicsObject* otherActor)
+{
+	if (isTrigger() && std::find(objectsInside.begin(), objectsInside.end(), otherActor) == objectsInside.end())
+	{
+		objectsInside.push_back(otherActor);
+		if (onTriggerEnter)
+		{
+			onTriggerEnter(otherActor);
+		}
+	}
 }

@@ -16,7 +16,12 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
+	glm::vec2 screen2World(glm::vec2 screenPos) const;
+
 protected:
+	const float aspectRatio = 16.0f / 9.0f;
+	const float extents = 100;
+
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
@@ -26,5 +31,6 @@ public:
 	void drawRect();
 	void ballsInBox();
 	void springTest(int amount);
+	void triggerTest();
 
 };

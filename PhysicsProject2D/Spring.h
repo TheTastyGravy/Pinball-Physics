@@ -14,6 +14,8 @@ public:
 	virtual void makeGizmo();
 	virtual void debug() const {};
 
+	bool isInside(glm::vec2 point) final { return false; }
+
 	glm::vec2 getContact1() const { return actor1 ? actor1->toWorld(contact1) : contact1; }
 	glm::vec2 getContact2() const { return actor2 ? actor2->toWorld(contact2) : contact2; }
 

@@ -35,9 +35,10 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setGravity(glm::vec2(0, -10));
 
 
-	drawRect();
+	//drawRect();
 	//ballsInBox();
 	//springTest(10);
+	triggerTest();
 
 
 	return true;
@@ -61,6 +62,17 @@ void PhysicsProject2DApp::update(float deltaTime)
 	physicsScene->draw();
 
 
+
+
+	//show white circle at cursor when mouse down
+	if (input->isMouseButtonDown(0))
+	{
+		int xScreen, yScreen;
+		input->getMouseXY(&xScreen, &yScreen);
+		glm::vec2 worldPos = screen2World(glm::vec2(xScreen, yScreen));
+		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.4));
+	}
+
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 	{
@@ -76,17 +88,40 @@ void PhysicsProject2DApp::draw()
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
+	// When extents = 100: X-axis = -100 to 100, Y-axis = -56.25 to 56.25
+	aie::Gizmos::draw2D(glm::ortho<float>(-extents, extents, -extents / aspectRatio, extents / aspectRatio, -1.0f, 1.0f));
+
 
 	// draw your stuff here!
-	static float aspectRatio = 16.0f / 9.0f;
-	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100 / aspectRatio, 100 / aspectRatio, -1.0f, 1.0f));
 
-	
+
+
+	//show FPS
+	char fps[32];
+	sprintf_s(fps, 32, "FPS: %i", getFPS());
+	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
+
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+
+glm::vec2 PhysicsProject2DApp::screen2World(glm::vec2 screenPos) const
+{
+	glm::vec2 worldPos = screenPos;
+
+	// We will move the center of the screen to (0,0)
+	worldPos.x -= getWindowWidth() / 2.0f;
+	worldPos.y -= getWindowHeight() / 2.0f;
+
+	// Scale this according to the extensts
+	worldPos.x *= 2.0f * extents / getWindowWidth();
+	worldPos.y *= 2.0f * extents / aspectRatio / getWindowHeight();
+
+	return worldPos;
 }
 
 
@@ -174,4 +209,33 @@ void PhysicsProject2DApp::springTest(int amount)
 	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.5f, 20, 8, 2);
 	box->setKinematic(true);
 	physicsScene->addActor(box);
+}
+
+void PhysicsProject2DApp::triggerTest()
+{
+	Sphere* ball1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0), 4, 4);
+	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4);
+	ball2->setKinematic(true);
+	ball2->setTrigger(true);
+
+	physicsScene->addActor(ball1);
+	physicsScene->addActor(ball2);
+
+	//box
+	Plane* plane1 = new Plane(glm::vec2(0.0f, 1.0f), -50);
+	physicsScene->addActor(plane1);
+	Plane* plane2 = new Plane(glm::vec2(0.0f, -1.0f), -50);
+	physicsScene->addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(1.0f, 0.0f), -70);
+	physicsScene->addActor(plane3);
+	Plane* plane4 = new Plane(glm::vec2(-1.0f, 0.0f), -70);
+	physicsScene->addActor(plane4);
+
+
+	physicsScene->addActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0, 4, 8, 3));
+	physicsScene->addActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0, 4, 8, 3));
+
+	//display when an object enters or exits the trigger
+	ball2->onTriggerEnter = [=](PhysicsObject* other) { std::cout << "Entered: " << other << std::endl; };
+	ball2->onTriggerExit = [=](PhysicsObject* other) { std::cout << "Exited: " << other << std::endl; };
 }

@@ -19,3 +19,9 @@ void Sphere::makeGizmo()
 {
 	aie::Gizmos::add2DCircle(position, radius, 12, color);
 }
+
+
+bool Sphere::isInside(glm::vec2 point)
+{
+	return glm::distance(point, getPosition()) <= getRadius();
+}

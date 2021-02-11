@@ -27,6 +27,8 @@ public:
 
 	float getElasticity() const { return elasticity; }
 
+	virtual bool isInside(glm::vec2 point) = 0;
+
 protected:
 	ShapeType shapeID;
 	bool isKinematic;

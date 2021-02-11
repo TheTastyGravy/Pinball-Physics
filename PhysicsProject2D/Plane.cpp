@@ -75,6 +75,12 @@ void Plane::resolveCollision(Rigidbody* otherActor, glm::vec2 contact)
 	glm::vec2 force = normal * j;
 	otherActor->applyForce(force, contact - otherActor->getPosition());
 
+	// Trigger collision callback
+	if (otherActor->collisionCallback)
+	{
+		otherActor->collisionCallback(this);
+	}
+
 	float pen = glm::dot(contact, normal) - distanceToOrigin;
 	PhysicsScene::applyContactForces(otherActor, nullptr, normal, pen);
 }
