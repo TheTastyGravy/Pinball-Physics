@@ -18,6 +18,7 @@ Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 	this->angularDrag = angularDrag;
 
 	this->isKinematic = false;
+	this->allowRotationAsKinematic = false;
 	this->isTriggerFlag = false;
 }
 
@@ -59,7 +60,21 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 	if (isKinematic)
 	{
 		velocity = glm::vec2(0);
-		angularVelocity = 0;
+
+		// If flag is set, update rotation
+		if (allowRotationAsKinematic)
+		{
+			rotation += angularVelocity * timestep;
+			angularVelocity -= angularVelocity * angularDrag * timestep;
+			if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
+			{
+				angularVelocity = 0.0f;
+			}
+		}
+		else
+		{
+			angularVelocity = 0;
+		}
 
 		return;
 	}

@@ -25,6 +25,8 @@ public:
 	bool getKinematic() const { return isKinematic; }
 	void setKinematic(const bool state) { this->isKinematic = state; }
 
+	void setKinematicRotation(const bool state) { this->allowRotationAsKinematic = state; }
+
 	float getElasticity() const { return elasticity; }
 
 	virtual bool isInside(glm::vec2 point) = 0;
@@ -32,6 +34,7 @@ public:
 protected:
 	ShapeType shapeID;
 	bool isKinematic;
+	bool allowRotationAsKinematic;		// Can the object rotate while isKinematic is true?
 	float elasticity;
 
 	PhysicsObject(ShapeType shapeID, float elasticity) :
