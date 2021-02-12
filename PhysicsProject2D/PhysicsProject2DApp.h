@@ -33,6 +33,8 @@ protected:
 
 	PhysicsScene* physicsScene;
 
+	bool gameOver;
+
 
 	Spring* launchSpring;
 	float defaultRestLength;

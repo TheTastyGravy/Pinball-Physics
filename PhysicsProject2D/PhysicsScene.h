@@ -14,6 +14,8 @@ public:
 	void addActor(PhysicsObject* actor);
 	void removeActor(PhysicsObject* actor);
 
+	void resetScene();
+
 	// This will call the update of each PhysicsObject and updates internally
 	// This will handle collision detection and resolution
 	void update(float deltaTime);

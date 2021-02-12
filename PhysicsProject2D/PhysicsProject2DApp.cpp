@@ -36,10 +36,7 @@ bool PhysicsProject2DApp::startup()
 	physicsScene->setTimeStep(0.01f);
 	physicsScene->setGravity(glm::vec2(0, -30));
 
-	score = 0;
-	ballsRemaining = 3;
-
-
+	
 	//drawRect();
 	//ballsInBox();
 	//springTest(10);
@@ -86,7 +83,17 @@ void PhysicsProject2DApp::update(float deltaTime)
 	//reset ball with 'r'
 	if (input->wasKeyPressed(aie::INPUT_KEY_R))
 	{
-		resetBall();
+		if (!gameOver)
+		{
+			resetBall();
+		}
+		//if the game is over, restart game
+		else
+		{
+			physicsScene->resetScene();
+			pinball();
+		}
+		
 	}
 
 
@@ -165,6 +172,10 @@ void PhysicsProject2DApp::resetBall()
 	else
 	{
 		//game over
+		gameOver = true;
+
+		//removing the ball from the game causes problems, so just move it out of the scene
+		ball->setPosition(glm::vec2(200, -100));
 	}
 }
 
@@ -316,6 +327,11 @@ void PhysicsProject2DApp::springLauncher()
 
 void PhysicsProject2DApp::pinball()
 {
+	score = 0;
+	ballsRemaining = 3;
+	gameOver = false;
+
+
 	const float pi = 3.1415;
 	//bounce objects apply a force and add score
 	std::function<void(PhysicsObject*)> addScoreFunc = [this](PhysicsObject*) { score += 100; };
@@ -427,8 +443,8 @@ void PhysicsProject2DApp::pinball()
 	physicsScene->addActor(ball);
 
 	//flippers
-	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 10, 1, 5, glm::vec2(-3.2f, 2.2f), true, 0.2f);
+	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 10, 1, 5, glm::vec2(-3.3f, 2.3f), true, 0.2f);
 	physicsScene->addActor(leftFlipper);
-	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 10, 1, 5, glm::vec2(3.2f, 2.2f), false, 0.2f);
+	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 10, 1, 5, glm::vec2(3.3f, 2.3f), false, 0.2f);
 	physicsScene->addActor(rightFlipper);
 }

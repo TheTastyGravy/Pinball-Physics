@@ -46,6 +46,11 @@ void PhysicsScene::removeActor(PhysicsObject* actor)
 	}
 }
 
+void PhysicsScene::resetScene()
+{
+	actors.clear();
+}
+
 
 void PhysicsScene::update(float deltaTime)
 {
