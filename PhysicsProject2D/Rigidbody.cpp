@@ -18,7 +18,7 @@ Rigidbody::Rigidbody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, 
 	this->angularDrag = angularDrag;
 
 	this->isKinematic = false;
-	this->allowRotationAsKinematic = false;
+	this->lockRotation = false;
 	this->isTriggerFlag = false;
 }
 
@@ -56,22 +56,23 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 	}
 
 
+	// If flag is set, update rotation
+	if (!lockRotation)
+	{
+		rotation += angularVelocity * timestep;
+		angularVelocity -= angularVelocity * angularDrag * timestep;
+		if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
+		{
+			angularVelocity = 0.0f;
+		}
+	}
+
 	// Kinematic objects dont react to forces
 	if (isKinematic)
 	{
 		velocity = glm::vec2(0);
 
-		// If flag is set, update rotation
-		if (allowRotationAsKinematic)
-		{
-			rotation += angularVelocity * timestep;
-			angularVelocity -= angularVelocity * angularDrag * timestep;
-			if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
-			{
-				angularVelocity = 0.0f;
-			}
-		}
-		else
+		if (lockRotation)
 		{
 			angularVelocity = 0;
 		}
@@ -83,11 +84,9 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 
 	// Apply velocity
 	position += getVelocity() * timestep;
-	rotation += angularVelocity * timestep;
 
 	// Apply drag
 	velocity -= velocity * linearDrag * timestep;
-	angularVelocity -= angularVelocity * angularDrag * timestep;
 	
 	// Stop the object if its velocity is too low
 	if (glm::length(velocity) < MIN_LINEAR_THRESHHOLD)
@@ -96,10 +95,6 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 		{
 			velocity = glm::vec2(0);
 		}
-	}
-	if (glm::length(angularVelocity) < MIN_ANGULAR_THRESHHOLD)
-	{
-		angularVelocity = 0.0f;
 	}
 }
 
@@ -182,6 +177,12 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 			PhysicsScene::applyContactForces(this, otherActor, normal, pen);
 		}
 	}
+}
+
+void Rigidbody::resetVelocity()
+{
+	velocity = glm::vec2(0);
+	angularVelocity = 0;
 }
 
 

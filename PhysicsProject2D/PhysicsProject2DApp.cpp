@@ -9,6 +9,7 @@
 #include "Box.h"
 #include "Spring.h"
 #include "Bouncer.h"
+#include "Flipper.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -33,16 +34,18 @@ bool PhysicsProject2DApp::startup()
 	physicsScene = new PhysicsScene();
 	// A smaller timestep will give a more accurate simulation, at the cost of speed
 	physicsScene->setTimeStep(0.01f);
-	physicsScene->setGravity(glm::vec2(0, -10));
+	physicsScene->setGravity(glm::vec2(0, -30));
+
+	score = 0;
+	ballsRemaining = 3;
 
 
 	//drawRect();
 	//ballsInBox();
 	//springTest(10);
 	//triggerTest();
-	springLauncher();
-
-	//physicsScene->addActor(new Bouncer(glm::vec2(30, -10), 5, 5));
+	//springLauncher();
+	pinball();
 
 
 	return true;
@@ -66,16 +69,27 @@ void PhysicsProject2DApp::update(float deltaTime)
 	physicsScene->draw();
 
 
-
-
-	//show white circle at cursor when mouse down
-	if (input->isMouseButtonDown(0))
+	//pull spring back with 'space'
+	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
 	{
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		glm::vec2 worldPos = screen2World(glm::vec2(xScreen, yScreen));
-		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.4));
+		launchSpring->setRestLength(launchSpring->getRestLength() - 10.0f * deltaTime);
 	}
+	if (input->wasKeyReleased(aie::INPUT_KEY_SPACE))
+	{
+		launchSpring->setRestLength(defaultRestLength);
+	}
+
+	//set flipper input
+	leftFlipper->setKeyDown(input->isKeyDown(aie::INPUT_KEY_A));
+	rightFlipper->setKeyDown(input->isKeyDown(aie::INPUT_KEY_D));
+
+	//reset ball with 'r'
+	if (input->wasKeyPressed(aie::INPUT_KEY_R))
+	{
+		resetBall();
+	}
+
+
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -105,6 +119,16 @@ void PhysicsProject2DApp::draw()
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
+	//show score
+	char scoreText[32];
+	sprintf_s(scoreText, 32, "Score: %i", score);
+	m_2dRenderer->drawText(m_font, scoreText, 0, 720 - 32 * 2 - 10);
+	//show balls
+	char ballText[32];
+	sprintf_s(ballText, 32, "Balls Remaining: %i", ballsRemaining);
+	m_2dRenderer->drawText(m_font, ballText, 0, 720 - 32 * 3 - 10);
+
+
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
@@ -126,6 +150,22 @@ glm::vec2 PhysicsProject2DApp::screen2World(glm::vec2 screenPos) const
 	worldPos.y *= 2.0f * extents / aspectRatio / getWindowHeight();
 
 	return worldPos;
+}
+
+
+void PhysicsProject2DApp::resetBall()
+{
+	if (ballsRemaining > 0)
+	{
+		ballsRemaining--;
+
+		ball->setPosition(glm::vec2(44, -23));
+		ball->resetVelocity();
+	}
+	else
+	{
+		//game over
+	}
 }
 
 
@@ -272,4 +312,123 @@ void PhysicsProject2DApp::springLauncher()
 	Box* stopper2 = new Box(glm::vec2(-7, 0), glm::vec2(0), 0, 10, 1, 1, 0);
 	stopper2->setKinematic(true);
 	physicsScene->addActor(stopper2);
+}
+
+void PhysicsProject2DApp::pinball()
+{
+	const float pi = 3.1415;
+	//bounce objects apply a force and add score
+	std::function<void(PhysicsObject*)> addScoreFunc = [this](PhysicsObject*) { score += 100; };
+
+
+	//basic shape
+	{
+		//outer walls
+		Box* box = new Box(glm::vec2(50, 0), glm::vec2(0), 0, 10, 3, 60);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-50, 0), glm::vec2(0), 0, 10, 3, 60);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(0, 50), glm::vec2(0), pi * 0.5f, 10, 3, 60);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(0, -50), glm::vec2(0), pi * 0.5f, 10, 3, 60);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+
+		//seperating wall for spring
+		box = new Box(glm::vec2(40, -10), glm::vec2(0), 0, 10, 1, 40);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		//angle for ball to bounce off
+		box = new Box(glm::vec2(45, 40), glm::vec2(0), pi * 0.25f, 10, 1, 13);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+	}
+
+	//details
+	{
+		//angles by flippers
+		Box* box = new Box(glm::vec2(24, -25), glm::vec2(0), pi * -0.35f, 10, 1, 18, 0.f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-32, -25), glm::vec2(0), pi * 0.35f, 10, 1, 18, 0.f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		
+		//left triangle
+		box = new Box(glm::vec2(20, -18), glm::vec2(0), pi * -0.3f, 10, 1, 12, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(15, -16), glm::vec2(0), pi * -0.15f, 10, 0.5f, 10, 1.7f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box->setKinematic(true);
+		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(24.75f, -9.5f), glm::vec2(0), pi * -0.62f, 10, 1, 5.75f, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		//right triangle
+		box = new Box(glm::vec2(-28, -18), glm::vec2(0), pi * 0.3f, 10, 1, 12, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-23, -16), glm::vec2(0), pi * 0.15f, 10, 0.5f, 10, 1.7f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box->setKinematic(true);
+		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-32.75f, -9.5f), glm::vec2(0), pi * 0.62f, 10, 1, 5.75f, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+
+	}
+
+	//spring
+	{
+		Box* springBase = new Box(glm::vec2(44, -50), glm::vec2(0), 0, 10, 3, 1);
+		springBase->setKinematic(true);
+		physicsScene->addActor(springBase);
+
+		Box* springTop = new Box(glm::vec2(44, -40), glm::vec2(0), 0, 5, 2.95f, 1, 0.8f);
+		springTop->setRotationLock(true);
+		physicsScene->addActor(springTop);
+
+		defaultRestLength = 25;
+		launchSpring = new Spring(springBase, springTop, 10, 300, defaultRestLength);
+		physicsScene->addActor(launchSpring);
+
+
+		Box* stopper1 = new Box(glm::vec2(47, -25), glm::vec2(0), 0, 10, 1.65f, 0.3f, 0);
+		stopper1->setKinematic(true);
+		physicsScene->addActor(stopper1);
+		Box* stopper2 = new Box(glm::vec2(41, -25), glm::vec2(0), 0, 10, 1.65f, 0.3f, 0);
+		stopper2->setKinematic(true);
+		physicsScene->addActor(stopper2);
+	}
+
+	//bouncers
+	Bouncer* bouncer = new Bouncer(glm::vec2(-30, 10), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	physicsScene->addActor(bouncer);
+	bouncer = new Bouncer(glm::vec2(-22, 18), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	physicsScene->addActor(bouncer);
+	bouncer = new Bouncer(glm::vec2(-18, 6), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	physicsScene->addActor(bouncer);
+
+	//trigger for game over
+	Box* trigger = new Box(glm::vec2(0, -43), glm::vec2(0), 0, 1, 20, 3, 0, 0, 0, glm::vec4(1, 0, 0, 0.5f));
+	trigger->setKinematic(true);
+	trigger->setTrigger(true);
+	// When the ball enters the trigger, reset it
+	trigger->onTriggerEnter = [this](PhysicsObject* other) { if (other == ball) { resetBall(); } };
+	physicsScene->addActor(trigger);
+
+
+	//start ball above spring
+	ball = new Sphere(glm::vec2(44, -23), glm::vec2(0), 1, 1.5f, 0.7f, 0.2f, 0.2f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
+	physicsScene->addActor(ball);
+
+	//flippers
+	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 10, 1, 5, glm::vec2(-3.2f, 2.2f), true, 0.2f);
+	physicsScene->addActor(leftFlipper);
+	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 10, 1, 5, glm::vec2(3.2f, 2.2f), false, 0.2f);
+	physicsScene->addActor(rightFlipper);
 }

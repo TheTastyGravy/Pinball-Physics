@@ -4,6 +4,10 @@
 #include "Renderer2D.h"
 #include "PhysicsScene.h"
 
+class Spring;
+class Flipper;
+class Sphere;
+
 class PhysicsProject2DApp : public aie::Application
 {
 public:
@@ -18,6 +22,8 @@ public:
 
 	glm::vec2 screen2World(glm::vec2 screenPos) const;
 
+	void resetBall();
+
 protected:
 	const float aspectRatio = 16.0f / 9.0f;
 	const float extents = 100;
@@ -27,11 +33,24 @@ protected:
 
 	PhysicsScene* physicsScene;
 
+
+	Spring* launchSpring;
+	float defaultRestLength;
+
+	Sphere* ball;
+
+	Flipper* leftFlipper;
+	Flipper* rightFlipper;
+
+	int score;
+	int ballsRemaining;
+
 public:
 	void drawRect();
 	void ballsInBox();
 	void springTest(int amount);
 	void triggerTest();
 	void springLauncher();
+	void pinball();
 
 };

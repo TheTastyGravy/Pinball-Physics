@@ -127,11 +127,15 @@ void PhysicsScene::applyContactForces(Rigidbody* actor1, Rigidbody* actor2, glm:
 		return;
 	}
 
-	float body2Mass = actor2 ? actor2->getMass() : INT_MAX;
+	float body2Mass = actor2 || actor2->getKinematic() ? actor2->getMass() : INT_MAX;
 	float body1Factor = body2Mass / (actor1->getMass() + body2Mass);
 
-	actor1->setPosition(actor1->getPosition() - body1Factor * collisionNorm * pen);
-	if (actor2)
+	if (!actor1->getKinematic())
+	{
+		actor1->setPosition(actor1->getPosition() - body1Factor * collisionNorm * pen);
+	}
+
+	if (actor2 && !actor2->getKinematic())
 	{
 		actor2->setPosition(actor2->getPosition() + (1 - body1Factor) * collisionNorm * pen);
 	}

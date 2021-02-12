@@ -45,6 +45,9 @@
     <ClCompile Include="Bouncer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Flipper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PhysicsProject2DApp.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bouncer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Flipper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

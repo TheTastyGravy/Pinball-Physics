@@ -16,6 +16,8 @@ public:
 	void applyForce(glm::vec2 force, glm::vec2 pos);
 	void resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::vec2* collisionNormal = nullptr, float pen = 0);
 
+	void resetVelocity();
+
 
 	glm::vec2 getPosition() const { return position; }
 	glm::vec2 getVelocity() const { return velocity; }

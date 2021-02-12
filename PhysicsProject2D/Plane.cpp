@@ -11,7 +11,7 @@ Plane::Plane() :
 	this->color = glm::vec4(1);
 
 	this->isKinematic = true;
-	this->allowRotationAsKinematic = false;
+	this->lockRotation = true;
 }
 
 Plane::Plane(glm::vec2 normal, float distance, float elasticity) : 
@@ -22,7 +22,7 @@ Plane::Plane(glm::vec2 normal, float distance, float elasticity) :
 	this->color = glm::vec4(0, 1, 0, 1);
 
 	this->isKinematic = true;
-	this->allowRotationAsKinematic = false;
+	this->lockRotation = true;
 }
 
 Plane::~Plane()

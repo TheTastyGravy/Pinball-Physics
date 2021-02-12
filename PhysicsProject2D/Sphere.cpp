@@ -18,6 +18,10 @@ Sphere::~Sphere()
 void Sphere::makeGizmo()
 {
 	aie::Gizmos::add2DCircle(position, radius, 12, color);
+
+	glm::vec2 thing(cosf(rotation), sinf(rotation));
+
+	aie::Gizmos::add2DLine(position, position + thing * 2.0f, glm::vec4(1, 1, 1, 1));
 }
 
 

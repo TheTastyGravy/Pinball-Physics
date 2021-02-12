@@ -25,7 +25,7 @@ public:
 	bool getKinematic() const { return isKinematic; }
 	void setKinematic(const bool state) { this->isKinematic = state; }
 
-	void setKinematicRotation(const bool state) { this->allowRotationAsKinematic = state; }
+	void setRotationLock(const bool state) { this->lockRotation = state; }
 
 	float getElasticity() const { return elasticity; }
 
@@ -33,8 +33,8 @@ public:
 
 protected:
 	ShapeType shapeID;
-	bool isKinematic;
-	bool allowRotationAsKinematic;		// Can the object rotate while isKinematic is true?
+	bool isKinematic;		// Should the object react to collisions?
+	bool lockRotation;		// This flag is independant of kinematic
 	float elasticity;
 
 	PhysicsObject(ShapeType shapeID, float elasticity) :
