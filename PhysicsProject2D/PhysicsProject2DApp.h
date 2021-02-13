@@ -35,7 +35,6 @@ protected:
 
 	bool gameOver;
 
-
 	Spring* launchSpring;
 	float defaultRestLength;
 

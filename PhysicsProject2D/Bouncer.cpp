@@ -13,7 +13,7 @@ Bouncer::Bouncer(glm::vec2 position, float radius, float elasticity, int& score,
 
 			// Apply constant force to colliding rigidbody
 			glm::vec2 force = otherRB->getPosition() - this->position;
-			force = glm::normalize(force) * 25.0f;
+			force = glm::normalize(force) * 50.0f;
 			otherRB->applyForce(force, glm::vec2(0));
 		}
 	};

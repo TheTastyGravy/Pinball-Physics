@@ -102,7 +102,7 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 void Rigidbody::applyForce(glm::vec2 force, glm::vec2 pos)
 {
 	velocity += force / getMass();
-	angularVelocity += (force.y * pos.x - force.x * pos.y) / getMoment();
+	angularVelocity += (force.y * pos.x + force.x * pos.y) / getMoment();
 }
 
 
@@ -139,8 +139,9 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 	glm::vec2 perpColNorm(normal.y, -normal.x);
 
 	// These are applied to the radius from axis to the application of force
-	float radius1 = glm::dot(contact - position, -perpColNorm);
-	float radius2 = glm::dot(contact - otherActor->getPosition(), perpColNorm);
+	// The radius from the center of mass to the contact point
+	float radius1 = glm::dot(contact - getCenter(), -perpColNorm);
+	float radius2 = glm::dot(contact - otherActor->getCenter(), perpColNorm);
 
 	// Velocity of the contact point on this object
 	float cp_velocity1 = glm::dot(velocity, normal) - radius1 * angularVelocity;
@@ -163,13 +164,13 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 
 		// Trigger collision callbacks
 		if (collisionCallback)
-			{
-				collisionCallback(otherActor);
-			}
+		{
+			collisionCallback(otherActor);
+		}
 		if (otherActor->collisionCallback)
-			{
-				otherActor->collisionCallback(this);
-			}
+		{
+			otherActor->collisionCallback(this);
+		}
 
 		// Apply contact forces to prevent objects from being inside eachother
 		if (pen > 0)

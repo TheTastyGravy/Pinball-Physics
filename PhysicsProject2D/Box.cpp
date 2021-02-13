@@ -6,7 +6,7 @@ Box::Box(glm::vec2 position, glm::vec2 velocity, float rotation, float mass, flo
 	Rigidbody(BOX, position, velocity, rotation, mass, elasticity, linearDrag, angularDrag), extents(width, height)
 {
 	this->color = color;
-	this->moment = (1.0f / 3.0f) * mass * width * height;
+	this->moment = (1.0f / 12.0f) * mass * (width * width + height * height);
 
 	this->localX = glm::vec2();
 	this->localY = glm::vec2();

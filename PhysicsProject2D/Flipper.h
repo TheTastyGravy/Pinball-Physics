@@ -12,6 +12,8 @@ public:
 
 	void setKeyDown(const bool state) { this->keyDown = state; }
 
+	virtual glm::vec2 getCenter() const { return rotationPoint; }
+
 protected:
 	glm::vec2 rotationPoint;
 	float startRot;

@@ -66,6 +66,7 @@ void PhysicsProject2DApp::update(float deltaTime)
 	physicsScene->draw();
 
 
+
 	//pull spring back with 'space'
 	if (input->isKeyDown(aie::INPUT_KEY_SPACE))
 	{
@@ -332,7 +333,7 @@ void PhysicsProject2DApp::pinball()
 	gameOver = false;
 
 
-	const float pi = 3.1415;
+	const float pi = 3.1415f;
 	//bounce objects apply a force and add score
 	std::function<void(PhysicsObject*)> addScoreFunc = [this](PhysicsObject*) { score += 100; };
 
@@ -404,12 +405,12 @@ void PhysicsProject2DApp::pinball()
 		springBase->setKinematic(true);
 		physicsScene->addActor(springBase);
 
-		Box* springTop = new Box(glm::vec2(44, -40), glm::vec2(0), 0, 5, 2.95f, 1, 0.8f);
+		Box* springTop = new Box(glm::vec2(44, -40), glm::vec2(0), 0, 10, 2.95f, 1, 1.0f);
 		springTop->setRotationLock(true);
 		physicsScene->addActor(springTop);
 
 		defaultRestLength = 25;
-		launchSpring = new Spring(springBase, springTop, 10, 300, defaultRestLength);
+		launchSpring = new Spring(springBase, springTop, 5, 1000, defaultRestLength);
 		physicsScene->addActor(launchSpring);
 
 
@@ -439,12 +440,12 @@ void PhysicsProject2DApp::pinball()
 
 
 	//start ball above spring
-	ball = new Sphere(glm::vec2(44, -23), glm::vec2(0), 1, 1.5f, 0.7f, 0.2f, 0.2f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
+	ball = new Sphere(glm::vec2(44, -23), glm::vec2(0), 1.3f, 1.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
 	physicsScene->addActor(ball);
 
 	//flippers
-	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 10, 1, 5, glm::vec2(-3.3f, 2.3f), true, 0.2f);
+	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 0.2f, 1, 5, glm::vec2(-3.6f, 2.7f), true, 0.45f);
 	physicsScene->addActor(leftFlipper);
-	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 10, 1, 5, glm::vec2(3.3f, 2.3f), false, 0.2f);
+	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 0.2f, 1, 5, glm::vec2(3.6f, 2.7f), false, 0.45f);
 	physicsScene->addActor(rightFlipper);
 }

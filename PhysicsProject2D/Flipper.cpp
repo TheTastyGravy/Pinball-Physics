@@ -11,6 +11,9 @@ Flipper::Flipper(glm::vec2 position, float rotation, float mass, float width, fl
 	this->keyDown = false;
 	this->isKinematic = true;
 	this->lockRotation = false;
+
+	//moment with the center of mass at the edge of a box
+	this->moment = (1.f / 12.f) * mass * (4 * height * height + width * width);
 }
 
 

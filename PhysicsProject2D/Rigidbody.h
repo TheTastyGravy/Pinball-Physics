@@ -18,7 +18,8 @@ public:
 
 	void resetVelocity();
 
-
+	// The center of mass (most of the time, this is just the position)
+	virtual glm::vec2 getCenter() const { return getPosition(); }
 	glm::vec2 getPosition() const { return position; }
 	glm::vec2 getVelocity() const { return velocity; }
 	float getRotation() const { return rotation; }

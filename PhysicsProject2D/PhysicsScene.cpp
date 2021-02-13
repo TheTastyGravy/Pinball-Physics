@@ -6,6 +6,8 @@
 #include "Box.h"
 #include <iostream>
 
+#include "Flipper.h"
+
 // Function pointer array for handling our collisions
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 static fn collisioFunctionArray[] =
@@ -127,19 +129,20 @@ void PhysicsScene::checkForCollision()
 
 void PhysicsScene::applyContactForces(Rigidbody* actor1, Rigidbody* actor2, glm::vec2 collisionNorm, float pen)
 {
+	// Triggers can be passed through, so dont apply contact forces
 	if ((actor1 && actor1->isTrigger()) || (actor2 && actor2->isTrigger()))
 	{
 		return;
 	}
 
-	float body2Mass = actor2 || actor2->getKinematic() ? actor2->getMass() : INT_MAX;
+	// If no actor2 was passed, or its kinematic, use 'infinite' mass
+	float body2Mass = actor2 && !actor2->getKinematic() ? actor2->getMass() : INT_MAX;
 	float body1Factor = body2Mass / (actor1->getMass() + body2Mass);
 
 	if (!actor1->getKinematic())
 	{
 		actor1->setPosition(actor1->getPosition() - body1Factor * collisionNorm * pen);
 	}
-
 	if (actor2 && !actor2->getKinematic())
 	{
 		actor2->setPosition(actor2->getPosition() + (1 - body1Factor) * collisionNorm * pen);
