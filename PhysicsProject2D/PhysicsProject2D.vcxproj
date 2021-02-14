@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Booster.cpp" />
     <ClCompile Include="Bouncer.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Flipper.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Spring.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Booster.h" />
     <ClInclude Include="Bouncer.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Flipper.h" />

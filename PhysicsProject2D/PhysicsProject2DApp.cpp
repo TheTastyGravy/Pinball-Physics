@@ -10,6 +10,7 @@
 #include "Spring.h"
 #include "Bouncer.h"
 #include "Flipper.h"
+#include "Booster.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -378,7 +379,7 @@ void PhysicsProject2DApp::pinball()
 		box = new Box(glm::vec2(20, -18), glm::vec2(0), pi * -0.3f, 10, 1, 12, 0.5f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(15, -16), glm::vec2(0), pi * -0.15f, 10, 0.5f, 10, 1.7f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box = new Box(glm::vec2(15, -16), glm::vec2(0), pi * -0.15f, 10, 0.5f, 10, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
 		box->setKinematic(true);
 		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
 		physicsScene->addActor(box);
@@ -389,7 +390,7 @@ void PhysicsProject2DApp::pinball()
 		box = new Box(glm::vec2(-28, -18), glm::vec2(0), pi * 0.3f, 10, 1, 12, 0.5f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(-23, -16), glm::vec2(0), pi * 0.15f, 10, 0.5f, 10, 1.7f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box = new Box(glm::vec2(-23, -16), glm::vec2(0), pi * 0.15f, 10, 0.5f, 10, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
 		box->setKinematic(true);
 		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
 		physicsScene->addActor(box);
@@ -413,6 +414,9 @@ void PhysicsProject2DApp::pinball()
 		launchSpring = new Spring(springBase, springTop, 5, 1000, defaultRestLength);
 		physicsScene->addActor(launchSpring);
 
+		// Use a booster above the spring to make sure the ball has enough speed
+		Booster* booster = new Booster(glm::vec2(44, -10), 0, 3, 5, glm::vec2(0, 20));
+		physicsScene->addActor(booster);
 
 		Box* stopper1 = new Box(glm::vec2(47, -25), glm::vec2(0), 0, 10, 1.65f, 0.3f, 0);
 		stopper1->setKinematic(true);

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Pinball">
+      <UniqueIdentifier>{0cbecf44-668b-4d3c-9194-25151e346efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pinball">
+      <UniqueIdentifier>{122b0f10-bd96-4917-bdc5-963c5d2dbe8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PhysicsProject2DApp.cpp">
@@ -42,11 +48,14 @@
     <ClCompile Include="Spring.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Booster.cpp">
+      <Filter>Source Files\Pinball</Filter>
+    </ClCompile>
     <ClCompile Include="Bouncer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Pinball</Filter>
     </ClCompile>
     <ClCompile Include="Flipper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Pinball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,11 +83,14 @@
     <ClInclude Include="Spring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Booster.h">
+      <Filter>Header Files\Pinball</Filter>
+    </ClInclude>
     <ClInclude Include="Bouncer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Pinball</Filter>
     </ClInclude>
     <ClInclude Include="Flipper.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Pinball</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
