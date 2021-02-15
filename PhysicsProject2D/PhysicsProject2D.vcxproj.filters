@@ -57,6 +57,9 @@
     <ClCompile Include="Flipper.cpp">
       <Filter>Source Files\Pinball</Filter>
     </ClCompile>
+    <ClCompile Include="RolloverButton.cpp">
+      <Filter>Source Files\Pinball</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PhysicsProject2DApp.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files\Pinball</Filter>
     </ClInclude>
     <ClInclude Include="Flipper.h">
+      <Filter>Header Files\Pinball</Filter>
+    </ClInclude>
+    <ClInclude Include="RolloverButton.h">
       <Filter>Header Files\Pinball</Filter>
     </ClInclude>
   </ItemGroup>

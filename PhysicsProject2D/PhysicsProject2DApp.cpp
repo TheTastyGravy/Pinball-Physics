@@ -11,6 +11,7 @@
 #include "Bouncer.h"
 #include "Flipper.h"
 #include "Booster.h"
+#include "RolloverButton.h"
 
 
 PhysicsProject2DApp::PhysicsProject2DApp()
@@ -433,6 +434,18 @@ void PhysicsProject2DApp::pinball()
 	physicsScene->addActor(bouncer);
 	bouncer = new Bouncer(glm::vec2(-18, 6), 3, 1, score, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(bouncer);
+
+	//buttons
+	std::vector<RolloverButton*> buttons;
+	buttons.push_back(new RolloverButton(glm::vec2(-10, 0), 0, 3, 3));
+	buttons.push_back(new RolloverButton(glm::vec2(5, 0), 0, 3, 3));
+
+	buttons[0]->createTriggerFunction(score, buttons);
+	physicsScene->addActor(buttons[0]);
+	buttons[1]->createTriggerFunction(score, buttons);
+	physicsScene->addActor(buttons[1]);
+
+	
 
 	//trigger for game over
 	Box* trigger = new Box(glm::vec2(0, -43), glm::vec2(0), 0, 1, 20, 3, 0, 0, 0, glm::vec4(1, 0, 0, 0.5f));
