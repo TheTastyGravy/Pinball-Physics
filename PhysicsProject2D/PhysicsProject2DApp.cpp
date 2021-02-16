@@ -116,8 +116,8 @@ void PhysicsProject2DApp::draw()
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
-	// When extents = 100: X-axis = -100 to 100, Y-axis = -56.25 to 56.25
-	aie::Gizmos::draw2D(glm::ortho<float>(-extents, extents, -extents / aspectRatio, extents / aspectRatio, -1.0f, 1.0f));
+	// When extents = 100: X-axis = -80 to 80, Y-axis = -100 to 100
+	aie::Gizmos::draw2D(glm::ortho<float>(-extents / aspectRatio, extents / aspectRatio, -extents, extents, -1.0f, 1.0f));
 
 
 	// draw your stuff here!
@@ -125,18 +125,18 @@ void PhysicsProject2DApp::draw()
 
 
 	//show FPS
-	char fps[32];
-	sprintf_s(fps, 32, "FPS: %i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
+	//char fps[32];
+	//sprintf_s(fps, 32, "FPS: %i", getFPS());
+	//m_2dRenderer->drawText(m_font, fps, 0, 900 - 32);
 
 	//show score
 	char scoreText[32];
 	sprintf_s(scoreText, 32, "Score: %i", score);
-	m_2dRenderer->drawText(m_font, scoreText, 0, 720 - 32 * 2 - 10);
+	m_2dRenderer->drawText(m_font, scoreText, 50, 900 - 32 - 10);
 	//show balls
 	char ballText[32];
 	sprintf_s(ballText, 32, "Balls Remaining: %i", ballsRemaining);
-	m_2dRenderer->drawText(m_font, ballText, 0, 720 - 32 * 3 - 10);
+	m_2dRenderer->drawText(m_font, ballText, 720 / 2.f + 10, 900 - 32 - 10);
 
 
 	// output some text, uses the last used colour
@@ -156,8 +156,8 @@ glm::vec2 PhysicsProject2DApp::screen2World(glm::vec2 screenPos) const
 	worldPos.y -= getWindowHeight() / 2.0f;
 
 	// Scale this according to the extensts
-	worldPos.x *= 2.0f * extents / getWindowWidth();
-	worldPos.y *= 2.0f * extents / aspectRatio / getWindowHeight();
+	worldPos.x *= 2.0f * extents / aspectRatio / getWindowWidth();
+	worldPos.y *= 2.0f * extents / getWindowHeight();
 
 	return worldPos;
 }
@@ -169,7 +169,7 @@ void PhysicsProject2DApp::resetBall()
 	{
 		ballsRemaining--;
 
-		ball->setPosition(glm::vec2(44, -23));
+		ball->setPosition(glm::vec2(71.5f, -70));
 		ball->resetVelocity();
 	}
 	else
@@ -343,112 +343,151 @@ void PhysicsProject2DApp::pinball()
 	//basic shape
 	{
 		//outer walls
-		Box* box = new Box(glm::vec2(50, 0), glm::vec2(0), 0, 10, 3, 60);
+		Box* box = new Box(glm::vec2(80, 0), glm::vec2(0), 0, 10, 3, 100);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(-50, 0), glm::vec2(0), 0, 10, 3, 60);
+		box = new Box(glm::vec2(-80, 0), glm::vec2(0), 0, 10, 3, 100);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(0, 50), glm::vec2(0), pi * 0.5f, 10, 3, 60);
+		box = new Box(glm::vec2(0, 95), glm::vec2(0), pi * 0.5f, 10, 10, 80);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(0, -50), glm::vec2(0), pi * 0.5f, 10, 3, 60);
+		box = new Box(glm::vec2(0, -100), glm::vec2(0), pi * 0.5f, 10, 3, 80);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+
+		//top corners
+		box = new Box(glm::vec2(75, 85), glm::vec2(0), pi * 0.25f, 10, 5, 10);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-75, 85), glm::vec2(0), pi * -0.25f, 10, 5, 10);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 
 		//seperating wall for spring
-		box = new Box(glm::vec2(40, -10), glm::vec2(0), 0, 10, 1, 40);
+		box = new Box(glm::vec2(65, -64), glm::vec2(0), 0, 10, 1, 34);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 		//angle for ball to bounce off
-		box = new Box(glm::vec2(45, 40), glm::vec2(0), pi * 0.25f, 10, 1, 13);
+		box = new Box(glm::vec2(78, -15), glm::vec2(0), pi * 0.25f, 10, 10, 10);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 	}
 
-	//details
+	//flipper area
 	{
 		//angles by flippers
-		Box* box = new Box(glm::vec2(24, -25), glm::vec2(0), pi * -0.35f, 10, 1, 18, 0.f);
+		Box* box = new Box(glm::vec2(40.5f, -64.5f), glm::vec2(0), pi * -0.38f, 10, 1, 27, 0.f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(-32, -25), glm::vec2(0), pi * 0.35f, 10, 1, 18, 0.f);
+		box = new Box(glm::vec2(-53.f, -64.5f), glm::vec2(0), pi * 0.38f, 10, 1, 27, 0.f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 		
-		//left triangle
-		box = new Box(glm::vec2(20, -18), glm::vec2(0), pi * -0.3f, 10, 1, 12, 0.5f);
-		box->setKinematic(true);
-		physicsScene->addActor(box);
-		box = new Box(glm::vec2(15, -16), glm::vec2(0), pi * -0.15f, 10, 0.5f, 10, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
-		box->setKinematic(true);
-		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
-		physicsScene->addActor(box);
-		box = new Box(glm::vec2(24.75f, -9.5f), glm::vec2(0), pi * -0.62f, 10, 1, 5.75f, 0.5f);
-		box->setKinematic(true);
-		physicsScene->addActor(box);
 		//right triangle
-		box = new Box(glm::vec2(-28, -18), glm::vec2(0), pi * 0.3f, 10, 1, 12, 0.5f);
+		box = new Box(glm::vec2(30, -55), glm::vec2(0), pi * -0.38f, 10, 1, 14, 0.5f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(-23, -16), glm::vec2(0), pi * 0.15f, 10, 0.5f, 10, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box = new Box(glm::vec2(29.5f, -45), glm::vec2(0), pi * -0.23f, 10, 0.5f, 19, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
 		box->setKinematic(true);
 		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
 		physicsScene->addActor(box);
-		box = new Box(glm::vec2(-32.75f, -9.5f), glm::vec2(0), pi * 0.62f, 10, 1, 5.75f, 0.5f);
+		box = new Box(glm::vec2(42.5f, -40.5f), glm::vec2(0), 0, 10, 1, 10, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		//left triangle
+		box = new Box(glm::vec2(-43, -55), glm::vec2(0), pi * 0.38f, 10, 1, 14, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-42.5f, -45), glm::vec2(0), pi * 0.23f, 10, 0.5f, 19, 1.9f, 0, 0, glm::vec4(0, 1, 0, 1));
+		box->setKinematic(true);
+		box->collisionCallback = addScoreFunc;	//bouncy wall gives score
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-55.5f, -40.5f), glm::vec2(0), 0, 10, 1, 10, 0.5f);
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 
+		//walls next to triangles
+		box = new Box(glm::vec2(53, -36), glm::vec2(0), 0, 10, 1, 6, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-67, -36), glm::vec2(0), 0, 10, 1, 6, 0.5f);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+	}
+
+	//booster
+	{
+		Box* box = new Box(glm::vec2(-81, 0), glm::vec2(0), pi * 0.17f, 10, 10, 10);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+		box = new Box(glm::vec2(-60, 10), glm::vec2(0), pi * 0.17f, 10, 1, 8);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+
+		box = new Box(glm::vec2(-48.5f, 2.2f), glm::vec2(0), pi * 0.45f, 10, 1, 8);
+		box->setKinematic(true);
+		physicsScene->addActor(box);
+
+		Booster* boost = new Booster(glm::vec2(-66, 6), pi * 0.17f, 6, 7, glm::vec2(0, 15) * pi * 0.17f);
+		physicsScene->addActor(boost);
 	}
 
 	//spring
 	{
-		Box* springBase = new Box(glm::vec2(44, -50), glm::vec2(0), 0, 10, 3, 1);
+		Box* springBase = new Box(glm::vec2(71.5f, -97), glm::vec2(0), 0, 1, 6, 1);
 		springBase->setKinematic(true);
 		physicsScene->addActor(springBase);
 
-		Box* springTop = new Box(glm::vec2(44, -40), glm::vec2(0), 0, 10, 2.95f, 1, 1.0f);
+		Box* springTop = new Box(glm::vec2(71.5f, -76), glm::vec2(0), 0, 10, 5, 1, 1.2f);
 		springTop->setRotationLock(true);
 		physicsScene->addActor(springTop);
 
-		defaultRestLength = 25;
-		launchSpring = new Spring(springBase, springTop, 5, 1000, defaultRestLength);
+		defaultRestLength = 20.7f;
+		launchSpring = new Spring(springBase, springTop, 5, 5000, defaultRestLength);
 		physicsScene->addActor(launchSpring);
 
 		// Use a booster above the spring to make sure the ball has enough speed
-		Booster* booster = new Booster(glm::vec2(44, -10), 0, 3, 5, glm::vec2(0, 20));
-		physicsScene->addActor(booster);
+		//Booster* booster = new Booster(glm::vec2(71.5f, -55), 0, 6, 5, glm::vec2(0, 20));
+		//physicsScene->addActor(booster);
 
-		Box* stopper1 = new Box(glm::vec2(47, -25), glm::vec2(0), 0, 10, 1.65f, 0.3f, 0);
+		Box* stopper1 = new Box(glm::vec2(75.5, -75), glm::vec2(0), 0, 10, 2.2f, 0.3f, 0);
 		stopper1->setKinematic(true);
 		physicsScene->addActor(stopper1);
-		Box* stopper2 = new Box(glm::vec2(41, -25), glm::vec2(0), 0, 10, 1.65f, 0.3f, 0);
+		Box* stopper2 = new Box(glm::vec2(67.5, -75), glm::vec2(0), 0, 10, 2.2f, 0.3f, 0);
 		stopper2->setKinematic(true);
 		physicsScene->addActor(stopper2);
 	}
 
 	//bouncers
-	Bouncer* bouncer = new Bouncer(glm::vec2(-30, 10), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	Bouncer* bouncer = new Bouncer(glm::vec2(-40, 20), 6, 1, score, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(bouncer);
-	bouncer = new Bouncer(glm::vec2(-22, 18), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	bouncer = new Bouncer(glm::vec2(-15, 15), 6, 1, score, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(bouncer);
-	bouncer = new Bouncer(glm::vec2(-18, 6), 3, 1, score, glm::vec4(1, 1, 0, 1));
+	bouncer = new Bouncer(glm::vec2(-25, 40), 6, 1, score, glm::vec4(1, 1, 0, 1));
 	physicsScene->addActor(bouncer);
 
-	//buttons
-	std::vector<RolloverButton*> buttons;
-	buttons.push_back(new RolloverButton(glm::vec2(-10, 0), 0, 3, 3));
-	buttons.push_back(new RolloverButton(glm::vec2(5, 0), 0, 3, 3));
+	//flipper lane rollovers
+	{
+		std::vector<RolloverButton*> buttons;
+		buttons.push_back(new RolloverButton(glm::vec2(59, -37), 0, 3, 3));
+		buttons.push_back(new RolloverButton(glm::vec2(48, -37), 0, 3, 3));
+		buttons.push_back(new RolloverButton(glm::vec2(-61, -37), 0, 3, 3));
+		buttons.push_back(new RolloverButton(glm::vec2(-73, -37), 0, 3, 3));
 
-	buttons[0]->createTriggerFunction(score, buttons);
-	physicsScene->addActor(buttons[0]);
-	buttons[1]->createTriggerFunction(score, buttons);
-	physicsScene->addActor(buttons[1]);
-
+		buttons[0]->createTriggerFunction(score, buttons);
+		physicsScene->addActor(buttons[0]);
+		buttons[1]->createTriggerFunction(score, buttons);
+		physicsScene->addActor(buttons[1]);
+		buttons[2]->createTriggerFunction(score, buttons);
+		physicsScene->addActor(buttons[2]);
+		buttons[3]->createTriggerFunction(score, buttons);
+		physicsScene->addActor(buttons[3]);
+	}
 	
 
 	//trigger for game over
-	Box* trigger = new Box(glm::vec2(0, -43), glm::vec2(0), 0, 1, 20, 3, 0, 0, 0, glm::vec4(1, 0, 0, 0.5f));
+	Box* trigger = new Box(glm::vec2(-7, -94), glm::vec2(0), 0, 1, 71, 3, 0, 0, 0, glm::vec4(1, 1, 0, 0.5f));
 	trigger->setKinematic(true);
 	trigger->setTrigger(true);
 	// When the ball enters the trigger, reset it
@@ -457,12 +496,12 @@ void PhysicsProject2DApp::pinball()
 
 
 	//start ball above spring
-	ball = new Sphere(glm::vec2(44, -23), glm::vec2(0), 1.3f, 1.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
+	ball = new Sphere(glm::vec2(71.5f, -70), glm::vec2(0), 1.3f, 2.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
 	physicsScene->addActor(ball);
 
 	//flippers
-	leftFlipper = new Flipper(glm::vec2(-12, -35.15f), pi * 0.35f, 0.2f, 1, 5, glm::vec2(-3.6f, 2.7f), true, 0.45f);
+	leftFlipper = new Flipper(glm::vec2(-22.f, -77.f), pi * 0.38f, 0.2f, 1, 7, glm::vec2(-4.0f, 2.0f) * 1.4f, true, 0.45f);
 	physicsScene->addActor(leftFlipper);
-	rightFlipper = new Flipper(glm::vec2(4, -35.15f), pi * -0.35f, 0.2f, 1, 5, glm::vec2(3.6f, 2.7f), false, 0.45f);
+	rightFlipper = new Flipper(glm::vec2(9, -77.f), pi * -0.38f, 0.2f, 1, 7, glm::vec2(4.0f, 2.0f) * 1.4f, false, 0.45f);
 	physicsScene->addActor(rightFlipper);
 }

@@ -6,7 +6,7 @@ int main() {
 	auto app = new PhysicsProject2DApp();
 
 	// initialise and loop
-	app->run("AIE", 1280, 720, false);
+	app->run("Pinball", 720, 900, false);
 
 	// deallocation
 	delete app;

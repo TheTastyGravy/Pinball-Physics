@@ -25,7 +25,7 @@ public:
 	void resetBall();
 
 protected:
-	const float aspectRatio = 16.0f / 9.0f;
+	const float aspectRatio = 900.f / 720.f;
 	const float extents = 100;
 
 	aie::Renderer2D*	m_2dRenderer;
