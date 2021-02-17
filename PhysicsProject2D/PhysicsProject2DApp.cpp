@@ -52,6 +52,7 @@ bool PhysicsProject2DApp::startup()
 
 void PhysicsProject2DApp::shutdown()
 {
+	delete physicsScene;
 	delete m_font;
 	delete m_2dRenderer;
 }
@@ -61,7 +62,6 @@ void PhysicsProject2DApp::update(float deltaTime)
 {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
-
 
 	aie::Gizmos::clear();
 	physicsScene->update(deltaTime);
@@ -83,20 +83,21 @@ void PhysicsProject2DApp::update(float deltaTime)
 	leftFlipper->setKeyDown(input->isKeyDown(aie::INPUT_KEY_A));
 	rightFlipper->setKeyDown(input->isKeyDown(aie::INPUT_KEY_D));
 
-	//reset ball with 'r'
-	if (input->wasKeyPressed(aie::INPUT_KEY_R))
+	//reset game with 'r'
+	if (input->wasKeyPressed(aie::INPUT_KEY_R) && gameOver)
 	{
-		if (!gameOver)
-		{
-			resetBall();
-		}
-		//if the game is over, restart game
-		else
-		{
-			physicsScene->resetScene();
-			pinball();
-		}
-		
+		physicsScene->resetScene();
+		pinball();
+	}
+	
+	//add extra ball with 't'
+	if (input->wasKeyPressed(aie::INPUT_KEY_T) && ballsRemaining > 0)
+	{
+		ballsRemaining--;
+		ballsActive++;
+
+		Sphere* ball = new Sphere(glm::vec2(71.5f, -70), glm::vec2(0), 1.3f, 2.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
+		physicsScene->addActor(ball);
 	}
 
 
@@ -163,22 +164,33 @@ glm::vec2 PhysicsProject2DApp::screen2World(glm::vec2 screenPos) const
 }
 
 
-void PhysicsProject2DApp::resetBall()
+void PhysicsProject2DApp::ballOut(Sphere* ball)
 {
-	if (ballsRemaining > 0)
+	// There are multiple balls in play
+	if (ballsActive > 1)
 	{
-		ballsRemaining--;
-
+		//move ball out of sight
+		ball->setKinematic(true);
+		ball->setPosition(glm::vec2(-200, -200));
+		ballsActive--;
+	}
+	// There is one ball in play
+	else if (ballsRemaining > 0 && ballsActive == 1)
+	{
+		//reset ball above spring
 		ball->setPosition(glm::vec2(71.5f, -70));
 		ball->resetVelocity();
+		ballsRemaining--;
 	}
+	// No balls remaining
 	else
 	{
 		//game over
 		gameOver = true;
-
+		ballsActive = 0;
 		//removing the ball from the game causes problems, so just move it out of the scene
-		ball->setPosition(glm::vec2(200, -100));
+		ball->setKinematic(true);
+		ball->setPosition(glm::vec2(-200, -200));
 	}
 }
 
@@ -332,6 +344,7 @@ void PhysicsProject2DApp::pinball()
 {
 	score = 0;
 	ballsRemaining = 3;
+	ballsActive = 1;
 	gameOver = false;
 
 
@@ -429,7 +442,7 @@ void PhysicsProject2DApp::pinball()
 		box->setKinematic(true);
 		physicsScene->addActor(box);
 
-		Booster* boost = new Booster(glm::vec2(-66, 6), pi * 0.17f, 6, 7, glm::vec2(0, 15) * pi * 0.17f);
+		Booster* boost = new Booster(glm::vec2(-66, 6), pi * 0.17f, 6, 7, glm::vec2(0, 200) * pi * 0.17f);
 		physicsScene->addActor(boost);
 	}
 
@@ -485,18 +498,24 @@ void PhysicsProject2DApp::pinball()
 		physicsScene->addActor(buttons[3]);
 	}
 	
-
 	//trigger for game over
-	Box* trigger = new Box(glm::vec2(-7, -94), glm::vec2(0), 0, 1, 71, 3, 0, 0, 0, glm::vec4(1, 1, 0, 0.5f));
-	trigger->setKinematic(true);
-	trigger->setTrigger(true);
-	// When the ball enters the trigger, reset it
-	trigger->onTriggerEnter = [this](PhysicsObject* other) { if (other == ball) { resetBall(); } };
-	physicsScene->addActor(trigger);
-
+	{
+		Box* trigger = new Box(glm::vec2(-7, -94), glm::vec2(0), 0, 1, 71, 3, 0, 0, 0, glm::vec4(1, 1, 0, 0.5f));
+		trigger->setKinematic(true);
+		trigger->setTrigger(true);
+		// When the ball enters the trigger, reset it
+		trigger->onTriggerEnter = [this](PhysicsObject* other)
+		{
+			if (Sphere* ball = dynamic_cast<Sphere*>(other))
+			{
+				ballOut(ball);
+			}
+		};
+		physicsScene->addActor(trigger);
+	}
 
 	//start ball above spring
-	ball = new Sphere(glm::vec2(71.5f, -70), glm::vec2(0), 1.3f, 2.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
+	Sphere* ball = new Sphere(glm::vec2(71.5f, -70), glm::vec2(0), 1.3f, 2.5f, 0.7f, 0.2f, 0.5f, glm::vec4(0.7f, 0.7f, 0.7f, 1));
 	physicsScene->addActor(ball);
 
 	//flippers

@@ -22,7 +22,7 @@ public:
 
 	glm::vec2 screen2World(glm::vec2 screenPos) const;
 
-	void resetBall();
+	void ballOut(Sphere* ball);
 
 protected:
 	const float aspectRatio = 900.f / 720.f;
@@ -38,13 +38,12 @@ protected:
 	Spring* launchSpring;
 	float defaultRestLength;
 
-	Sphere* ball;
-
 	Flipper* leftFlipper;
 	Flipper* rightFlipper;
 
 	int score;
 	int ballsRemaining;
+	int ballsActive;
 
 public:
 	void drawRect();
