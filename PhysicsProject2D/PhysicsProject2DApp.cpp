@@ -28,6 +28,7 @@ bool PhysicsProject2DApp::startup()
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
 	m_2dRenderer = new aie::Renderer2D();
+	setBackgroundColour(0.1f, 0.1f, 0.1f);
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
@@ -37,6 +38,8 @@ bool PhysicsProject2DApp::startup()
 	// A smaller timestep will give a more accurate simulation, at the cost of speed
 	physicsScene->setTimeStep(0.01f);
 	physicsScene->setGravity(glm::vec2(0, -30));
+
+	showingControls = false;
 
 	
 	//drawRect();
@@ -100,6 +103,12 @@ void PhysicsProject2DApp::update(float deltaTime)
 		physicsScene->addActor(ball);
 	}
 
+	//toggle controls display with 'p'
+	if (input->wasKeyPressed(aie::INPUT_KEY_P))
+	{
+		showingControls = !showingControls;
+	}
+
 
 
 	// exit the application
@@ -116,19 +125,12 @@ void PhysicsProject2DApp::draw()
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
-
 	// When extents = 100: X-axis = -80 to 80, Y-axis = -100 to 100
 	aie::Gizmos::draw2D(glm::ortho<float>(-extents / aspectRatio, extents / aspectRatio, -extents, extents, -1.0f, 1.0f));
 
 
 	// draw your stuff here!
 
-
-
-	//show FPS
-	//char fps[32];
-	//sprintf_s(fps, 32, "FPS: %i", getFPS());
-	//m_2dRenderer->drawText(m_font, fps, 0, 900 - 32);
 
 	//show score
 	char scoreText[32];
@@ -138,10 +140,38 @@ void PhysicsProject2DApp::draw()
 	char ballText[32];
 	sprintf_s(ballText, 32, "Balls Remaining: %i", ballsRemaining);
 	m_2dRenderer->drawText(m_font, ballText, 720 / 2.f + 10, 900 - 32 - 10);
+	//show how to display controls
+	m_2dRenderer->drawText(m_font, "Press P to view controls", 20, 5);
 
+	//show game over screen
+	if (gameOver)
+	{
+		//draw a transparent box behind text
+		m_2dRenderer->setRenderColour(0, 0, 0, 0.9f);
+		m_2dRenderer->drawBox(720 / 2.f, 900 / 2.f + 30, 400, 220);
+		m_2dRenderer->setRenderColour(1, 1, 1, 1);
 
-	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+		
+		m_2dRenderer->drawText(m_font, "Game Over", 720 / 2.f - 80, 900 / 2.f);
+		m_2dRenderer->drawText(m_font, "Press 'r' to restart", 720 / 2.f - 180, 900 / 2.f - 55);
+
+		char text[32];
+		sprintf_s(text, 32, "Score: %i", score);
+		m_2dRenderer->drawText(m_font, text, 720 / 2.f - (strlen(text) / 2.f) * 19, 900 / 2.f + 100);
+	}
+	//show controls
+	else if (showingControls)
+	{
+		//draw a transparent box behind text
+		m_2dRenderer->setRenderColour(0, 0, 0, 0.9f);
+		m_2dRenderer->drawBox(720 / 2.f, 900 / 2.f + 50, 600, 180);
+		m_2dRenderer->setRenderColour(1, 1, 1, 1);
+
+		m_2dRenderer->drawText(m_font, "Use A and D for flippers", 720 / 2.f - 210, 900 / 2.f + 100);
+		m_2dRenderer->drawText(m_font, "Hold Space to pull back launcher", 720 / 2.f - 280, 900 / 2.f + 40);
+		m_2dRenderer->drawText(m_font, "Press T to add a second ball", 720 / 2.f - 240, 900 / 2.f - 20);
+	}
+
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -500,7 +530,7 @@ void PhysicsProject2DApp::pinball()
 	
 	//trigger for game over
 	{
-		Box* trigger = new Box(glm::vec2(-7, -94), glm::vec2(0), 0, 1, 71, 3, 0, 0, 0, glm::vec4(1, 1, 0, 0.5f));
+		Box* trigger = new Box(glm::vec2(-7, -94), glm::vec2(0), 0, 1, 71, 3, 0, 0, 0, glm::vec4(0));
 		trigger->setKinematic(true);
 		trigger->setTrigger(true);
 		// When the ball enters the trigger, reset it

@@ -34,6 +34,7 @@ protected:
 	PhysicsScene* physicsScene;
 
 	bool gameOver;
+	bool showingControls;
 
 	Spring* launchSpring;
 	float defaultRestLength;

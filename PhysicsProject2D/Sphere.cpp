@@ -19,8 +19,12 @@ void Sphere::makeGizmo()
 {
 	aie::Gizmos::add2DCircle(position, radius, 12, color);
 
-	glm::vec2 end = glm::vec2(std::cos(rotation), std::sin(rotation)) * radius;
-	aie::Gizmos::add2DLine(position, position + end, glm::vec4(1));
+	//draw line for rotation on non kinematic objects
+	if (!getKinematic())
+	{
+		glm::vec2 end = glm::vec2(std::cos(rotation), std::sin(rotation)) * radius;
+		aie::Gizmos::add2DLine(position, position + end, glm::vec4(1));
+	}
 }
 
 
