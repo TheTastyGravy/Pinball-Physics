@@ -165,11 +165,11 @@ void Rigidbody::resolveCollision(Rigidbody* otherActor, glm::vec2 contact, glm::
 		// Trigger collision callbacks
 		if (collisionCallback)
 		{
-			collisionCallback(otherActor);
+			collisionCallback(otherActor, contact);
 		}
 		if (otherActor->collisionCallback)
 		{
-			otherActor->collisionCallback(this);
+			otherActor->collisionCallback(this, contact);
 		}
 
 		// Apply contact forces to prevent objects from being inside eachother

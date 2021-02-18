@@ -80,7 +80,7 @@ void Plane::resolveCollision(Rigidbody* otherActor, glm::vec2 contact)
 	// Trigger collision callback
 	if (otherActor->collisionCallback)
 	{
-		otherActor->collisionCallback(this);
+		otherActor->collisionCallback(this, contact);
 	}
 
 	float pen = glm::dot(contact, normal) - distanceToOrigin;

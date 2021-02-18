@@ -157,7 +157,7 @@ void PhysicsProject2DApp::draw()
 
 		char text[32];
 		sprintf_s(text, 32, "Score: %i", score);
-		m_2dRenderer->drawText(m_font, text, 720 / 2.f - (strlen(text) / 2.f) * 19, 900 / 2.f + 100);
+		m_2dRenderer->drawText(m_font, text, 720 / 2.f - (m_font->getStringWidth(text) / 2.f), 900 / 2.f + 100);
 	}
 	//show controls
 	else if (showingControls)
@@ -380,7 +380,7 @@ void PhysicsProject2DApp::pinball()
 
 	const float pi = 3.1415f;
 	//bounce objects apply a force and add score
-	std::function<void(PhysicsObject*)> addScoreFunc = [this](PhysicsObject*) { score += 100; };
+	std::function<void(PhysicsObject*, glm::vec2)> addScoreFunc = [this](PhysicsObject*, glm::vec2) { score += 100; };
 
 
 	//basic shape

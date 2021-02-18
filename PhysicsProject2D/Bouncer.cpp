@@ -4,7 +4,7 @@ Bouncer::Bouncer(glm::vec2 position, float radius, float elasticity, int& score,
 	Sphere(position, glm::vec2(0), 1, radius, elasticity, 0, 0, color)
 {
 	setKinematic(true);
-	collisionCallback = [this, &score](PhysicsObject* other)
+	collisionCallback = [this, &score](PhysicsObject* other, glm::vec2 collision)
 	{
 		Rigidbody* otherRB = dynamic_cast<Rigidbody*>(other);
 		if (otherRB)

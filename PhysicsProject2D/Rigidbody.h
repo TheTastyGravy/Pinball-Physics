@@ -39,7 +39,7 @@ public:
 	void setRotation(const float rotation) { this->rotation = rotation; }
 
 	glm::vec2 toWorld(const glm::vec2 localPos) const;
-	std::function<void(PhysicsObject*)> collisionCallback;
+	std::function<void(PhysicsObject* other, glm::vec2 contact)> collisionCallback;
 
 
 	bool isTrigger() const { return isTriggerFlag; }

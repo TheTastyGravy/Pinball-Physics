@@ -8,6 +8,22 @@ Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius,
 	this->color = color;
 
 	this->moment = (2.f/5.f) * mass * (radius * radius);
+
+	this->collisionCallback = [this](PhysicsObject* other, glm::vec2 collision)
+	{
+		Rigidbody* otherRB = dynamic_cast<Rigidbody*>(other);
+		glm::vec2 otherVel = otherRB ? otherRB->getVelocity() : glm::vec2(0);
+
+		//find the perpendicular of the collision
+		glm::vec2 norm = glm::normalize(collision - getPosition());
+		glm::vec2 perp(norm.y, -norm.x);
+
+		glm::vec2 relativeVel = getVelocity() + otherVel;
+
+		//find the speed of the collision point
+		//angular velocity = velocity / radius
+		angularVelocity = glm::dot(relativeVel, perp) / getRadius();
+	};
 }
 
 Sphere::~Sphere()
