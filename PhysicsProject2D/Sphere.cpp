@@ -42,9 +42,3 @@ void Sphere::makeGizmo()
 		aie::Gizmos::add2DLine(position, position + end, glm::vec4(1));
 	}
 }
-
-
-bool Sphere::isInside(glm::vec2 point)
-{
-	return glm::distance(point, getPosition()) <= getRadius();
-}

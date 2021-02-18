@@ -9,8 +9,6 @@ public:
 
 	virtual void makeGizmo();
 
-	virtual bool isInside(glm::vec2 point);
-
 	float getRadius() const { return radius; }
 	glm::vec4 getColor() const { return color; }
 

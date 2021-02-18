@@ -11,8 +11,6 @@ public:
 
 	bool checkBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal);
 
-	virtual bool isInside(glm::vec2 point) { return false; }
-
 	float getWidth() const { return extents.x; }
 	float getHeight() const { return extents.y; }
 	glm::vec2 getExtents() const { return extents; }
