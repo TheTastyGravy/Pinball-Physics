@@ -47,6 +47,7 @@ public:
 
 	void triggerEnter(PhysicsObject* otherActor);
 	std::function<void(PhysicsObject*)> onTriggerEnter;
+	std::function<void(PhysicsObject*)> whileInsideTrigger;
 	std::function<void(PhysicsObject*)> onTriggerExit;
 
 protected:

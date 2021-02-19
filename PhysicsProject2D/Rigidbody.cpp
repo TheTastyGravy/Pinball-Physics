@@ -49,6 +49,13 @@ void Rigidbody::fixedUpdate(glm::vec2 gravity, float timestep)
 					break;
 				}
 			}
+			else	//object hasnt exit trigger
+			{
+				if (whileInsideTrigger)
+				{
+					whileInsideTrigger(*it);
+				}
+			}
 		}
 
 		// Clear the list now for the next frame

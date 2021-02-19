@@ -32,7 +32,7 @@ bool PhysicsProject2DApp::startup()
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
-	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
+	m_font = new aie::Font("./font/consolas.ttf", 32);
 
 	physicsScene = new PhysicsScene();
 	// A smaller timestep will give a more accurate simulation, at the cost of speed
@@ -482,7 +482,7 @@ void PhysicsProject2DApp::pinball()
 		springBase->setKinematic(true);
 		physicsScene->addActor(springBase);
 
-		Box* springTop = new Box(glm::vec2(71.5f, -76), glm::vec2(0), 0, 10, 5, 1, 1.2f);
+		Box* springTop = new Box(glm::vec2(71.5f, -76), glm::vec2(0), 0, 10, 5, 1, 1.0f);
 		springTop->setRotationLock(true);
 		physicsScene->addActor(springTop);
 
@@ -539,6 +539,22 @@ void PhysicsProject2DApp::pinball()
 			if (Sphere* ball = dynamic_cast<Sphere*>(other))
 			{
 				ballOut(ball);
+			}
+		};
+		physicsScene->addActor(trigger);
+	}
+
+	//trigger for lower gravity at the top of the play area
+	{
+		Box* trigger = new Box(glm::vec2(0, 50), glm::vec2(0), 0, 1, 80, 60, 0, 0, 0, glm::vec4(0));
+		trigger->setKinematic(true);
+		trigger->setTrigger(true);
+		// When the ball enters the trigger, reset it
+		trigger->whileInsideTrigger = [this](PhysicsObject* other)
+		{
+			if (Sphere* ball = dynamic_cast<Sphere*>(other))
+			{
+				ball->applyForce(glm::vec2(0, 10 * 0.01f), glm::vec2(0));
 			}
 		};
 		physicsScene->addActor(trigger);
